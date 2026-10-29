@@ -1,21 +1,15 @@
-# Na svaki push na granu main: test, build i prijenos dist/ na Plus Hosting preko FTPS-a.
-# Potrebne tajne (GitHub → Settings → Secrets and variables → Actions):
-#   FTP_SERVER    npr. ftp.apartments-raspolic.com
-#   FTP_USERNAME  FTP račun čija je početna mapa public_html (cPanel → FTP Accounts)
-#   FTP_PASSWORD
-name: Deploy
+# Na svaki push na main: testovi, build i paket za ručni prijenos na hosting.
+# Paket: Actions → zadnje pokretanje → dolje „Artifacts“ → web-za-hosting
+# (Plus Hosting nema uključen FTPS, pa se web prenosi ručno kroz cPanel File Manager.)
+name: Build
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-concurrency:
-  group: deploy
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,16 +20,10 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - name: Prijenos na hosting
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Paket za hosting
+        uses: actions/upload-artifact@v4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          local-dir: ./dist/
-          server-dir: ./
-          # Ne briše ništa što nije sam prenio; web-podaci/ je ionako izvan public_html.
-          exclude: |
-            **/.git*
-            **/.git*/**
+          name: web-za-hosting
+          path: dist/
+          include-hidden-files: true
+          retention-days: 30
