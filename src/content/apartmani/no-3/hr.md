@@ -4,7 +4,7 @@ spavanje:
   - prostorija: Spavaća soba 1
     opis: Bračni krevet 180 × 200
   - prostorija: Spavaća soba 2
-    opis: Jedan krevet
+    opis: Dva odvojena kreveta
   - prostorija: Dnevni boravak
     opis: Kauč na razvlačenje
 oprema:

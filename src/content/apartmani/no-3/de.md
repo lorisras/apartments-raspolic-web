@@ -4,7 +4,7 @@ spavanje:
   - prostorija: Schlafzimmer 1
     opis: Doppelbett 180 × 200
   - prostorija: Schlafzimmer 2
-    opis: Ein Einzelbett
+    opis: Zwei Einzelbetten
   - prostorija: Wohnzimmer
     opis: Schlafsofa
 oprema:

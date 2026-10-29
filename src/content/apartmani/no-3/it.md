@@ -4,7 +4,7 @@ spavanje:
   - prostorija: Camera 1
     opis: Letto matrimoniale 180 × 200
   - prostorija: Camera 2
-    opis: Un letto singolo
+    opis: Due letti singoli
   - prostorija: Soggiorno
     opis: Divano letto
 oprema:
