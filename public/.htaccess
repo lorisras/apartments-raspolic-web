@@ -1,4 +1,9 @@
 # Apartments Rašpolić – Plus Hosting (Apache)
+# --- ZAŠTITA LOZINKOM DOK JE WEB U IZRADI – obrisati ovih 5 redaka kad web ide u javnost ---
+AuthType Basic
+AuthName "Apartments - u izradi"
+AuthUserFile "/home/apartments/.htpasswds/public_html/passwd"
+Require valid-user
 Options -Indexes
 DirectoryIndex index.html index.php
 ErrorDocument 404 /404.html
