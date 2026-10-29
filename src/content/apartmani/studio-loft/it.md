@@ -9,7 +9,7 @@ oprema:
   - Wi‑Fi gratuito
   - TV con canali satellitari
   - Bagno con doccia
-  - Lavatrice
+  - Lavatrice nella lavanderia comune (piano terra)
   - Parcheggio gratuito
   - Terrazza comune con barbecue
 ---

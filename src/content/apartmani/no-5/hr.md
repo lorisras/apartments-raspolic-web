@@ -13,7 +13,8 @@ oprema:
   - Besplatan Wi‑Fi
   - TV, satelitski programi
   - Prostrana kupaonica
-  - Perilica rublja
+  - Perilica suđa
+  - Perilica rublja u zajedničkoj praonici (prizemlje)
   - Velika terasa uz apartman
   - Besplatan parking
   - Zajednička terasa s roštiljem

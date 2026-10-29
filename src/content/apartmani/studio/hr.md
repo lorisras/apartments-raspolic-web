@@ -11,6 +11,7 @@ oprema:
   - Kupaonica s tušem
   - Besplatan parking
   - Zajednička terasa s roštiljem
+  - Perilica rublja u zajedničkoj praonici (prizemlje)
 ---
 Mali i udoban studio od 20 m² u prizemlju kuće. Ima potpuno opremljenu kuhinju, dva odvojena kreveta, TV sa satelitskim programima, klima-uređaj i kupaonicu s tušem.
 

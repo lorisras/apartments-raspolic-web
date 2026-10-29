@@ -11,7 +11,8 @@ oprema:
   - Free Wi‑Fi
   - TV with satellite channels
   - Spacious bathroom
-  - Washing machine
+  - Dishwasher
+  - Washing machine in the shared laundry room (ground floor)
   - Large terrace
   - Free parking
   - Shared barbecue terrace

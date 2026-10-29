@@ -11,7 +11,8 @@ oprema:
   - Kostenloses WLAN
   - TV mit Satellitenprogrammen
   - Geräumiges Bad
-  - Waschmaschine
+  - Geschirrspüler
+  - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
   - Kostenloser Parkplatz
   - Gemeinsame Grillterrasse
 ---

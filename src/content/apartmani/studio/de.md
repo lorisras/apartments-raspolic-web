@@ -11,6 +11,7 @@ oprema:
   - Bad mit Dusche
   - Kostenloser Parkplatz
   - Gemeinsame Grillterrasse
+  - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
 ---
 Kleines, gemütliches Studio mit 20 m² im Erdgeschoss des Hauses. Es hat eine voll ausgestattete Küche, zwei Einzelbetten, Sat-TV, Klimaanlage und ein Bad mit Dusche.
 

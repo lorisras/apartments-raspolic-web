@@ -11,6 +11,7 @@ oprema:
   - Bagno con doccia
   - Parcheggio gratuito
   - Terrazza comune con barbecue
+  - Lavatrice nella lavanderia comune (piano terra)
 ---
 Piccolo e accogliente monolocale di 20 m² al piano terra della casa. Ha una cucina completamente attrezzata, due letti singoli, TV satellitare, aria condizionata e bagno con doccia.
 

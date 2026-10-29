@@ -11,6 +11,7 @@ oprema:
   - Bathroom with shower
   - Free parking
   - Shared barbecue terrace
+  - Washing machine in the shared laundry room (ground floor)
 ---
 A small, comfortable 20 m² studio on the ground floor of the house. It has a fully equipped kitchen, two single beds, satellite TV, air conditioning and a bathroom with shower.
 
