@@ -1,0 +1,166 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+import Osnovni from '../../../layouts/Osnovni.astro';
+import OdabirGostiju from '../../../components/OdabirGostiju.astro';
+import KontaktGumbi from '../../../components/KontaktGumbi.astro';
+import podaci from '../../../data/apartmani.json';
+import { JEZICI, PUT, t, url, alternative } from '../../../i18n/ui.js';
+import { slike } from '../../../lib/slike.js';
+
+export function getStaticPaths() {
+  return JEZICI.flatMap((lang) => podaci.apartmani.map((ap) => ({ params: { lang, seg: PUT.apartmani[lang], slug: ap.oznaka }, props: { ap } })));
+}
+const { ap } = Astro.props;
+const jezik = Astro.params.lang;
+const T = t(jezik);
+const unos = await getEntry('apartmani', `${ap.oznaka}/${jezik}`);
+const { Content } = unos ? await render(unos) : { Content: null };
+const foto = slike(`apartmani/${ap.oznaka}`);
+const detalji = [ap.m2 && `${ap.m2} ${T.m2}`, ap.kat?.[jezik], ap.spavaceSobe != null && T.spavaca(ap.spavaceSobe), T.do_osoba(ap.maxOsoba)].filter(Boolean).join(' · ');
+const zaSkriptu = { oznaka: ap.oznaka, naziv: ap.naziv, maxOsoba: ap.maxOsoba, upit: url.stranica(jezik, 'upit') };
+---
+<Osnovni jezik={jezik} naslov={`${ap.naziv} – Apartments Rašpolić`} opis={unos?.data.opis} alternative={alternative((j) => url.apartman(j, ap.oznaka))} slika={foto[0]?.src}>
+  <div class="omot">
+    <a class="natrag" href={`${url.naslovnica(jezik)}#apartmani`}>{T.svi_apartmani}</a>
+    <div class="glava">
+      <div>
+        <h1>{ap.naziv}</h1>
+        <p class="tekst-2">{detalji}</p>
+      </div>
+      {ap.airbnb?.ocjena && <a class="mala" href={ap.airbnb.url} target="_blank" rel="noopener">★ {T.ocjena_airbnb(ap.airbnb.ocjena.toLocaleString(jezik), ap.airbnb.recenzija)}</a>}
+    </div>
+
+    <div class="galerija">
+      {[0, 1, 2, 3].map((i) => foto[i]
+        ? <button type="button" class:list={['g-slika', `g${i}`]} data-otvori={i}><Image src={foto[i]} alt={`${ap.naziv} – ${T.fotografija} ${i + 1}`} widths={i ? [300, 600] : [600, 1000, 1400]} sizes={i ? '(max-width: 760px) 50vw, 300px' : '(max-width: 760px) 100vw, 600px'} loading={i ? 'lazy' : 'eager'} /></button>
+        : <div class:list={['g-slika', `g${i}`, 'slika-mjesto']} aria-hidden="true">[{T.fotografija}]</div>)}
+      {foto.length > 4
+        ? <button type="button" class="g-slika g4 sve" data-otvori="0">{T.sve_fotografije(foto.length)}</button>
+        : <div class="g-slika g4 slika-mjesto" aria-hidden="true">[{T.fotografija}]</div>}
+    </div>
+    {foto.length > 0 && (
+      <dialog class="pregled" id="pregled" aria-label={ap.naziv}>
+        <button type="button" class="gumb zatvori" data-zatvori>{T.zatvori}</button>
+        <div class="pregled-slike">
+          {foto.map((f, i) => <Image src={f} alt={`${ap.naziv} – ${T.fotografija} ${i + 1}`} widths={[800, 1600]} sizes="(max-width: 900px) 100vw, 900px" loading="lazy" id={`f${i}`} />)}
+        </div>
+      </dialog>
+    )}
+
+    <a class="gumb glavni skok" href="#upit">{T.skok_kalendar}</a>
+    <div class="raspored">
+      <div class="glavni-stupac">
+        <section class="stog">
+          <h2>{T.o_apartmanu}</h2>
+          <div class="opis tekst-2">{Content && <Content />}</div>
+        </section>
+        {unos?.data.spavanje.length > 0 && (
+          <section class="stog">
+            <h2>{T.gdje_spava}</h2>
+            <div class="spavanje">
+              {unos.data.spavanje.map((s) => <div class="kartica"><p class="prostorija">{s.prostorija}</p><p class="mala">{s.opis}</p></div>)}
+            </div>
+          </section>
+        )}
+        {unos?.data.oprema.length > 0 && (
+          <section class="stog">
+            <h2>{T.oprema}</h2>
+            <ul class="tockice">{unos.data.oprema.map((o) => <li>{o}</li>)}</ul>
+          </section>
+        )}
+        <section class="stog">
+          <h2>{T.cijene}</h2>
+          <div id="cjenik" data-naslovi={JSON.stringify({ razdoblje: T.razdoblje, cijena: T.cijena_noc, min: T.min_noci, cijelaGodina: T.cijela_godina, ostalo: T.ostatak_godine })} data-dodatak={T.dodatak_osoba('%o', '%d')}></div>
+          <p class="mala">{T.cijene_napomena}</p>
+        </section>
+        <p class="pravno mala">
+          {T.iznajmljivac}: {ap.vlasnik} · {T.kategorizacija}: {T.zvjezdice(ap.zvjezdice)}{ap.registracijskiBroj && <> · {T.reg_broj}: {ap.registracijskiBroj}</>}
+        </p>
+      </div>
+
+      <aside class="kartica bocno" id="upit" aria-label={T.kalendar}>
+        <p class="od-cijena" data-od-cijena>&nbsp;</p>
+        <div class="kalendar" id="kalendar" aria-live="polite"></div>
+        <form class="gosti-bocno" id="kal-gosti" onsubmit="return false">
+          <OdabirGostiju jezik={jezik} datumi={false} maxOsoba={ap.maxOsoba} prefiks="k" />
+        </form>
+        <p class="uputa" data-uputa>{T.odaberi_dolazak}</p>
+        <div class="zbroj" data-zbroj hidden></div>
+        <a class="gumb glavni" href={url.stranica(jezik, 'upit') + `?apartman=${ap.oznaka}`} data-posalji>{T.posalji_za_datume}</a>
+        <KontaktGumbi />
+        <p class="mala">{T.upit_ne_obvezuje}</p>
+      </aside>
+    </div>
+  </div>
+  <script type="application/json" id="apartman-podaci" set:html={JSON.stringify(zaSkriptu)} />
+  <script type="module" src="/js/apartman.js" is:inline></script>
+</Osnovni>
+
+<style>
+  .skok { display: none; width: 100%; margin-top: 16px; }
+  @media (max-width: 960px) { .skok { display: flex; } }
+  .natrag { display: inline-flex; padding: 18px 0 6px; text-decoration: none; font-weight: 500; font-size: 15px; }
+  .glava { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px 24px; margin: 4px 0 24px; }
+  .glava h1 { font-size: clamp(34px, 5vw, 48px); }
+  .glava p { margin-top: 6px; }
+  .galerija { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; aspect-ratio: 2.2; }
+  .g-slika { border: 0; padding: 0; border-radius: 12px; overflow: hidden; background: var(--placeholder); cursor: zoom-in; }
+  .g-slika :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .g0 { grid-row: 1 / 3; border-radius: 16px; }
+  .sve { background: var(--navy); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; }
+  @media (max-width: 760px) { .galerija { grid-template-columns: 1fr 1fr; grid-template-rows: auto; aspect-ratio: auto; } .g0 { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 4 / 3; } .g1, .g2, .g3, .g4 { aspect-ratio: 4 / 3; } .g3 { display: none; } }
+  .pregled { border: 0; padding: 0; width: min(960px, 100vw); max-height: 100vh; background: var(--bg); border-radius: 12px; }
+  .pregled::backdrop { background: rgba(20, 28, 40, .7); }
+  .pregled .zatvori { position: sticky; top: 8px; float: right; margin: 8px; z-index: 1; }
+  .pregled-slike { display: grid; gap: 8px; padding: 8px; }
+  .raspored { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 40px; align-items: flex-start; }
+  .glavni-stupac { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+  .stog { display: flex; flex-direction: column; gap: 14px; }
+  .glavni-stupac h2 { font-size: 30px; }
+  .opis :global(p + p) { margin-top: 12px; }
+  .spavanje { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .spavanje .kartica { padding: 16px 18px; }
+  .prostorija { font-weight: 600; color: var(--navy); }
+  .pravno { padding-top: 16px; border-top: 1px solid var(--line); }
+  .bocno { flex: 1 1 340px; min-width: 0; padding: 22px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 16px; }
+  @media (max-width: 960px) { .bocno { position: static; } }
+  .od-cijena { font-size: 15px; color: var(--ink-2); }
+  .od-cijena :global(b) { font-family: var(--f-naslov); font-weight: 600; font-size: 30px; color: var(--navy); }
+  .gosti-bocno { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .uputa { font-size: 15px; color: var(--ink-2); }
+  .zbroj { background: var(--bg-2); border-radius: 10px; padding: 12px 14px; font-size: 15px; display: grid; gap: 4px; }
+  .zbroj :global(.ukupno) { display: flex; justify-content: space-between; font-weight: 600; color: var(--navy); font-size: 17px; }
+  .zbroj :global(.upozorenje) { color: var(--warn); }
+</style>
+<style is:global>
+  /* kalendar (crta ga /js/apartman.js) */
+  .kal-glava { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .kal-glava b { color: var(--navy); }
+  .kal-glava button { width: 44px; height: 44px; border: 1px solid var(--line); background: #fff; border-radius: 8px; font-size: 20px; color: var(--navy); cursor: pointer; }
+  .kal-glava button:disabled { opacity: .35; cursor: default; }
+  .kal-mreza { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+  .kal-dan-ime { font-size: 12px; font-weight: 600; color: var(--muted); padding-bottom: 2px; }
+  .kal-dan { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 4px 0 3px; min-height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; cursor: pointer; font-size: 15px; color: var(--ink); }
+  .kal-dan small { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .kal-dan:hover:not(:disabled) { border-color: var(--navy); }
+  .kal-dan:disabled { cursor: default; }
+  .kal-dan.zauzet { background: var(--placeholder); border-color: var(--placeholder); color: #6B6355; text-decoration: line-through; }
+  .kal-dan.zauzet small { visibility: hidden; }
+  .kal-dan.proslo { background: transparent; border-color: transparent; color: #A9A196; }
+  .kal-dan.odabran { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .kal-dan.odabran small { color: #D5DDEA; }
+  .kal-dan.u-rasponu { background: #E8EDF6; border-color: #C9D3E6; }
+  .kal-dan.odlazak-moguc.zauzet { background: linear-gradient(135deg, #fff 50%, var(--placeholder) 50%); text-decoration: none; color: var(--ink); }
+  .kal-legenda { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .kal-legenda i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--field); background: #fff; }
+  .kal-legenda i.z { background: var(--placeholder); border-color: var(--placeholder); }
+  .kal-legenda i.o { background: var(--navy); border-color: var(--navy); }
+  .cjenik-tablica { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 380px; }
+  .cjenik-omot + .cjenik-omot { margin-top: 12px; }
+  .cjenik-omot { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  .cjenik-tablica th { background: var(--bg-2); text-align: left; padding: 12px 16px; font-size: 14px; color: var(--muted); font-weight: 600; }
+  .cjenik-tablica td { padding: 12px 16px; border-top: 1px solid var(--line); }
+  .cjenik-tablica td.c { font-weight: 600; color: var(--navy); white-space: nowrap; }
+  .cjenik-tablica caption { text-align: left; font-weight: 600; color: var(--navy); padding: 12px 16px 0; }
+</style>

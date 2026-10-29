@@ -1,0 +1,38 @@
+---
+import OdabirGostiju from './OdabirGostiju.astro';
+import { t } from '../i18n/ui.js';
+import podaci from '../data/apartmani.json';
+const { jezik, apartman = '' } = Astro.props;
+const T = t(jezik);
+---
+<form class="kartica obrazac-upita" method="post" action="/api/upit.php" data-jezik={jezik} novalidate aria-label={T.upit}>
+  <label class="polje">{T.dolazak}<input type="date" name="od" required></label>
+  <label class="polje">{T.odlazak}<input type="date" name="do" required></label>
+  <label class="polje cijeli">{T.apartman}
+    <select name="apartman">
+      <option value="">{T.bilo_koji}</option>
+      {podaci.apartmani.map((a) => <option value={a.oznaka} data-max={a.maxOsoba} selected={a.oznaka === apartman}>{a.naziv}</option>)}
+    </select>
+  </label>
+  <div class="gosti cijeli"><OdabirGostiju jezik={jezik} datumi={false} maxOsoba={5} prefiks={`u-${apartman || 'x'}`} /></div>
+  <label class="kvacica cijeli" data-krevetic hidden><input type="checkbox" name="krevetic" value="1">{T.krevetic}</label>
+  <label class="polje cijeli">{T.ime}<input name="ime" autocomplete="name" required maxlength="100"></label>
+  <label class="polje">{T.email}<input type="email" name="email" autocomplete="email" required maxlength="160"></label>
+  <label class="polje">{T.telefon}<input type="tel" name="telefon" autocomplete="tel" maxlength="40"></label>
+  <label class="polje cijeli">{T.poruka}<textarea name="poruka" rows="4" maxlength="3000"></textarea></label>
+  <label class="zamka" aria-hidden="true">Web<input name="web" tabindex="-1" autocomplete="off"></label>
+  <p class="cijeli iznos mala" data-iznos hidden></p>
+  <div class="cijeli" data-stanje role="status" aria-live="polite"></div>
+  <button type="submit" class="gumb glavni cijeli">{T.posalji}</button>
+  <p class="cijeli mala">{T.upit_ne_obvezuje}</p>
+</form>
+<script type="module" src="/js/upit.js" is:inline></script>
+
+<style>
+  .obrazac-upita { padding: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .cijeli { grid-column: 1 / -1; }
+  .gosti { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .zamka { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .iznos { color: var(--ink-2); }
+  @media (max-width: 420px) { .obrazac-upita { grid-template-columns: 1fr; padding: 18px; } .gosti { grid-template-columns: 1fr 1fr; } }
+</style>

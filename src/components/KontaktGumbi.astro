@@ -1,0 +1,18 @@
+---
+// WhatsApp i Viber. Brojevi su u src/data/apartmani.json (kuca.whatsapp, kuca.viber), u međunarodnom obliku: 385911234567.
+// Skripta /js/kontakt.js dopisuje u WhatsApp poruku apartman i odabrane datume.
+import podaci from '../data/apartmani.json';
+const { kompaktno = false } = Astro.props;
+const wa = (podaci.kuca.whatsapp || '').replace(/\D/g, '');
+const vb = (podaci.kuca.viber || '').replace(/\D/g, '');
+---
+<div class:list={['kontakt-gumbi', { kompaktno }]}>
+  <a class="gumb" data-whatsapp={wa} href={wa ? `https://wa.me/${wa}` : '#'} aria-disabled={wa ? undefined : 'true'} target="_blank" rel="noopener">
+    <svg class="ikona" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#2E7D4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.3L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>
+    WhatsApp
+  </a>
+  <a class="gumb" href={vb ? `viber://chat?number=%2B${vb}` : '#'} aria-disabled={vb ? undefined : 'true'}>
+    <svg class="ikona" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#6B4FB8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.2a2.2 2.2 0 0 1 2.2-2.2h1.1a1 1 0 0 1 1 .8l.6 2.6a1 1 0 0 1-.3 1l-1.2 1.1a11 11 0 0 0 4.9 4.9l1.1-1.2a1 1 0 0 1 1-.3l2.6.6a1 1 0 0 1 .8 1v1.1A2.2 2.2 0 0 1 16.6 19C10.2 19 5 13.8 5 7.2z"/></svg>
+    Viber
+  </a>
+</div>

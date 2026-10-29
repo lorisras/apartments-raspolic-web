@@ -1,0 +1,58 @@
+---
+import Osnovni from '../../layouts/Osnovni.astro';
+import ObrazacUpita from '../../components/ObrazacUpita.astro';
+import KontaktGumbi from '../../components/KontaktGumbi.astro';
+import podaci from '../../data/apartmani.json';
+import { JEZICI, PUT, t, url, alternative } from '../../i18n/ui.js';
+
+export function getStaticPaths() {
+  return JEZICI.flatMap((lang) => ['upit', 'impressum', 'privatnost'].map((vrsta) => ({ params: { lang, stranica: PUT[vrsta][lang] }, props: { vrsta } })));
+}
+const { vrsta } = Astro.props;
+const jezik = Astro.params.lang;
+const T = t(jezik);
+const naslov = { upit: T.upit_naslov, impressum: T.impressum, privatnost: T.privatnost }[vrsta];
+const vlasnici = [...new Set(podaci.apartmani.map((a) => a.vlasnik))];
+---
+<Osnovni jezik={jezik} naslov={`${naslov} – Apartments Rašpolić`} alternative={alternative((j) => url.stranica(j, vrsta))}>
+  <div class="omot stranica">
+    {vrsta === 'upit' && (
+      <div class="dva">
+        <div class="stog">
+          <p class="nadnaslov">{T.upit}</p>
+          <h1>{T.upit_naslov}</h1>
+          <p class="tekst-2">{T.upit_tekst}</p>
+          <KontaktGumbi />
+          {(podaci.kuca.telefon || podaci.kuca.email) && <p class="mala">{[podaci.kuca.telefon, podaci.kuca.email].filter(Boolean).join(' · ')}</p>}
+        </div>
+        <ObrazacUpita jezik={jezik} />
+      </div>
+    )}
+    {vrsta === 'impressum' && (
+      <div class="stog uski">
+        <h1>{T.impressum}</h1>
+        <p><b>Apartments Rašpolić</b><br>{podaci.kuca.adresa}</p>
+        <p>{T.vlasnici}: {vlasnici.join(', ')}</p>
+        <p class="mala">[OIB, kontakt i ostali podaci za impressum – upisati]</p>
+        <ul class="popis-ap">
+          {podaci.apartmani.map((a) => <li><b>{a.naziv}</b> · {T.iznajmljivac}: {a.vlasnik} · {T.kategorizacija}: {T.zvjezdice(a.zvjezdice)}{a.registracijskiBroj && <> · {T.reg_broj}: {a.registracijskiBroj}</>}</li>)}
+        </ul>
+      </div>
+    )}
+    {vrsta === 'privatnost' && (
+      <div class="stog uski">
+        <h1>{T.privatnost}</h1>
+        <p class="tekst-2">{T.privatnost_tekst}</p>
+        <p class="mala">[Puni tekst politike privatnosti (GDPR) – upisati prije objave.]</p>
+      </div>
+    )}
+  </div>
+</Osnovni>
+
+<style>
+  .stranica { padding-top: 48px; }
+  .dva { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: start; }
+  .stog { display: flex; flex-direction: column; gap: 16px; }
+  .uski { max-width: 720px; }
+  .popis-ap { padding-left: 20px; display: grid; gap: 6px; }
+</style>

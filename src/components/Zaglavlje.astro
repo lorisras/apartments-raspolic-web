@@ -1,0 +1,24 @@
+---
+import { t, url, JEZICI, NAZIV_JEZIKA } from '../i18n/ui.js';
+const { jezik, alternative } = Astro.props;
+const T = t(jezik);
+const naslovnica = url.naslovnica(jezik);
+---
+<header class="zaglavlje">
+  <div class="omot">
+    <a class="znak" href={naslovnica} aria-label="Apartments Rašpolić">
+      <span>APARTMENTS</span><span>Rašpolić</span>
+    </a>
+    <nav class="izbornik" aria-label={T.glavni_izbornik}>
+      <a href={`${naslovnica}#apartmani`}>{T.nav_apartmani}</a>
+      <a href={`${naslovnica}#kuca`}>{T.nav_kuca}</a>
+      <a href={`${naslovnica}#lokacija`}>{T.nav_lokacija}</a>
+      <a href={url.stranica(jezik, 'upit')}>{T.nav_upit}</a>
+    </nav>
+    <nav class="jezici" aria-label={T.izbornik_jezika}>
+      {JEZICI.map((j) => (
+        <a href={alternative?.[j] ?? url.naslovnica(j)} hreflang={j} lang={j} aria-current={j === jezik ? 'true' : undefined} title={NAZIV_JEZIKA[j]}>{j.toUpperCase()}</a>
+      ))}
+    </nav>
+  </div>
+</header>

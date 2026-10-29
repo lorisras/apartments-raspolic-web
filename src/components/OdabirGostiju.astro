@@ -1,0 +1,14 @@
+---
+// Polja za datume i goste – ista na naslovnici, stranici apartmana i u upitu.
+import { t } from '../i18n/ui.js';
+const { jezik, datumi = true, maxOsoba = 6, prefiks = 'g' } = Astro.props;
+const T = t(jezik);
+const raspon = (od, doo) => Array.from({ length: doo - od + 1 }, (_, i) => od + i);
+---
+{datumi && <>
+  <label class="polje">{T.dolazak}<input type="date" name="od" id={`${prefiks}-od`} required></label>
+  <label class="polje">{T.odlazak}<input type="date" name="do" id={`${prefiks}-do`} required></label>
+</>}
+<label class="polje">{T.odrasli}<select name="odrasli" id={`${prefiks}-odrasli`}>{raspon(1, maxOsoba).map((n) => <option value={n} selected={n === 2}>{n}</option>)}</select></label>
+<label class="polje">{T.djeca}<select name="djeca" id={`${prefiks}-djeca`}>{raspon(0, maxOsoba - 1).map((n) => <option value={n}>{n}</option>)}</select></label>
+<label class="polje">{T.bebe}<select name="bebe" id={`${prefiks}-bebe`}>{raspon(0, 2).map((n) => <option value={n}>{n}</option>)}</select></label>

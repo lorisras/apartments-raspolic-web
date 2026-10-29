@@ -1,0 +1,5 @@
+---
+spavanje: []
+oprema: []
+---
+[Beschreibung – folgt.]

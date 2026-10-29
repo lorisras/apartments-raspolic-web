@@ -1,0 +1,98 @@
+{
+  "_napomena": "Podaci koji se rijetko mijenjaju. Cijene, dodaci i minimalni broj noćenja su u adminu (/admin). Opisi su u src/content/apartmani/<oznaka>/<jezik>.md, fotografije u src/assets/apartmani/<oznaka>/.",
+  "kuca": {
+    "naziv": "Apartments Rašpolić",
+    "adresa": "Trinajstići 31B, 51215 Kastav, Hrvatska",
+    "geo": { "lat": null, "lng": null },
+    "telefon": "",
+    "whatsapp": "",
+    "viber": "",
+    "email": ""
+  },
+  "apartmani": [
+    {
+      "oznaka": "no-1",
+      "naziv": "Apartment no. 1",
+      "vlasnik": "Loris Rašpolić",
+      "m2": 33,
+      "kat": { "hr": "prizemlje", "en": "ground floor", "de": "Erdgeschoss", "it": "piano terra" },
+      "spavaceSobe": 1,
+      "maxOsoba": 3,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": { "ocjena": 4.74, "recenzija": 23, "url": "https://www.airbnb.com/rooms/24991188" }
+    },
+    {
+      "oznaka": "no-2",
+      "naziv": "Apartment no. 2",
+      "vlasnik": "Loris Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": null,
+      "maxOsoba": 4,
+      "zvjezdice": 4,
+      "registracijskiBroj": "",
+      "airbnb": null
+    },
+    {
+      "oznaka": "no-3",
+      "naziv": "Apartment no. 3",
+      "vlasnik": "Loris Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": null,
+      "maxOsoba": 5,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": null
+    },
+    {
+      "oznaka": "no-4",
+      "naziv": "Apartment no. 4",
+      "vlasnik": "Alen Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": null,
+      "maxOsoba": 4,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": null
+    },
+    {
+      "oznaka": "no-5",
+      "naziv": "Apartment no. 5",
+      "vlasnik": "Alen Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": null,
+      "maxOsoba": 5,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": null
+    },
+    {
+      "oznaka": "studio",
+      "naziv": "Studio",
+      "vlasnik": "Loris Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": 0,
+      "maxOsoba": 2,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": null
+    },
+    {
+      "oznaka": "studio-loft",
+      "naziv": "Studio loft",
+      "vlasnik": "Alen Rašpolić",
+      "m2": null,
+      "kat": null,
+      "spavaceSobe": 0,
+      "maxOsoba": 2,
+      "zvjezdice": 3,
+      "registracijskiBroj": "",
+      "airbnb": null
+    }
+  ]
+}

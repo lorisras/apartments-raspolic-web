@@ -1,0 +1,22 @@
+{
+  "name": "apartments-raspolic",
+  "type": "module",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Web Apartments Rašpolić – Trinajstići 31B, Kastav",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node testovi/cijene.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/figtree": "^5.2.5",
+    "@fontsource-variable/fraunces": "^5.2.5",
+    "astro": "^5.18.2",
+    "sharp": "^0.34.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

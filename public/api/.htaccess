@@ -1,0 +1,4 @@
+# Samo podaci.php i upit.php smiju se pozivati s weba.
+<FilesMatch "^(lib|ical-sync)\.php$">
+  Require all denied
+</FilesMatch>

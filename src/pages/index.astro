@@ -1,0 +1,26 @@
+---
+// Korijen weba: preusmjerava na jezik preglednika (na hostingu to radi .htaccess, ovo je rezerva).
+import { JEZICI, NAZIV_JEZIKA, url } from '../i18n/ui.js';
+---
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apartments Rašpolić</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href={new URL('/hr/', Astro.site).href}>
+  {JEZICI.map((j) => <link rel="alternate" hreflang={j} href={new URL(url.naslovnica(j), Astro.site).href}>)}
+  <script is:inline>
+    (function () {
+      var p = (navigator.languages || [navigator.language || 'hr']).map(function (l) { return String(l).slice(0, 2).toLowerCase(); });
+      var j = p.find(function (l) { return ['hr', 'en', 'de', 'it'].indexOf(l) >= 0; }) || (p.indexOf('bs') >= 0 || p.indexOf('sr') >= 0 || p.indexOf('sl') >= 0 ? 'hr' : 'en');
+      location.replace('/' + j + '/');
+    })();
+  </script>
+  <noscript><meta http-equiv="refresh" content="0; url=/hr/"></noscript>
+</head>
+<body>
+  <p>{JEZICI.map((j) => <><a href={url.naslovnica(j)}>{NAZIV_JEZIKA[j]}</a> </>)}</p>
+</body>
+</html>

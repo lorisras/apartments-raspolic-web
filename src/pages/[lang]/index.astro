@@ -1,0 +1,163 @@
+---
+import { Image } from 'astro:assets';
+import Osnovni from '../../layouts/Osnovni.astro';
+import OdabirGostiju from '../../components/OdabirGostiju.astro';
+import KontaktGumbi from '../../components/KontaktGumbi.astro';
+import ObrazacUpita from '../../components/ObrazacUpita.astro';
+import podaci from '../../data/apartmani.json';
+import { JEZICI, t, url, alternative } from '../../i18n/ui.js';
+import { slike } from '../../lib/slike.js';
+
+export const getStaticPaths = () => JEZICI.map((lang) => ({ params: { lang } }));
+const jezik = Astro.params.lang;
+const T = t(jezik);
+const aps = podaci.apartmani;
+const kuca = slike('kuca');
+const zaSkriptu = aps.map((a) => ({ oznaka: a.oznaka, naziv: a.naziv, maxOsoba: a.maxOsoba, url: url.apartman(jezik, a.oznaka) }));
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: 'Apartments Rašpolić',
+  address: { '@type': 'PostalAddress', streetAddress: 'Trinajstići 31B', postalCode: '51215', addressLocality: 'Kastav', addressCountry: 'HR' },
+  url: new URL(url.naslovnica(jezik), Astro.site).href, numberOfRooms: aps.length,
+  amenityFeature: ['Free parking', 'Wi-Fi', 'Air conditioning', 'Garden', 'Barbecue'].map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
+};
+---
+<Osnovni jezik={jezik} naslov={T.meta_naslov} alternative={alternative(url.naslovnica)} jsonLd={jsonLd} slika={kuca[0]?.src}>
+  <section class="omot uvod">
+    <div class="uvod-red">
+      <div class="uvod-tekst">
+        <p class="nadnaslov">{T.hero_mjesto}</p>
+        <h1>{T.hero_naslov}</h1>
+        <p class="tekst-2 veliki">{T.hero_tekst}</p>
+        <form class="kartica trazi" id="trazi" aria-label={T.obrazac_termin}>
+          <OdabirGostiju jezik={jezik} maxOsoba={5} prefiks="n" />
+          <button type="submit" class="gumb glavni">{T.provjeri}</button>
+        </form>
+      </div>
+      {kuca[0]
+        ? <Image src={kuca[0]} alt="Apartments Rašpolić" widths={[480, 800, 1200]} sizes="(max-width: 760px) 100vw, 50vw" class="uvod-slika" loading="eager" fetchpriority="high" />
+        : <div class="uvod-slika slika-mjesto" role="img" aria-label={T.fotografija}>[{T.fotografija}: src/assets/kuca/]</div>}
+    </div>
+    <ul class="cinjenice">
+      <li><b>{aps.length}</b> {T.cinjenice[0]}</li>
+      <li><b>3 km</b> {T.cinjenice[1]}</li>
+      {T.cinjenice.slice(2).map((c) => <li>{c}</li>)}
+    </ul>
+  </section>
+
+  <section id="apartmani" class="omot sekcija">
+    <div class="sekcija-glava">
+      <div><p class="nadnaslov">{T.smjestaj}</p><h2>{T.sedam_apartmana}</h2></div>
+      <p class="mala uz-naslov">{T.smjestaj_tekst}</p>
+    </div>
+    <div class="kartice-ap">
+      {aps.map((a) => {
+        const s = slike(`apartmani/${a.oznaka}`)[0];
+        const detalji = [a.m2 && `${a.m2} ${T.m2}`, a.kat?.[jezik], T.do_osoba(a.maxOsoba)].filter(Boolean).join(' · ');
+        return (
+          <a class="kartica kartica-ap" href={url.apartman(jezik, a.oznaka)} data-oznaka={a.oznaka}>
+            {s ? <Image src={s} alt={a.naziv} widths={[400, 700]} sizes="(max-width: 600px) 100vw, 300px" class="ap-slika" />
+               : <div class="ap-slika slika-mjesto" role="img" aria-label={T.fotografija}>[{T.fotografija}]</div>}
+            <div class="ap-tijelo">
+              <h3>{a.naziv}</h3>
+              <p class="mala">{detalji}</p>
+              <div class="ap-dno">
+                <span class="ap-cijena" data-cijena>&nbsp;</span>
+                <span class="oznaka" data-status hidden></span>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section id="kuca" class="omot sekcija">
+    <div class="dva-stupca">
+      <div class="kuca-slike">
+        {[1, 2, 3].map((i, n) => kuca[i]
+          ? <Image src={kuca[i]} alt="" widths={[400, 700]} sizes="(max-width: 760px) 50vw, 300px" class:list={['kuca-slika', `ks${n}`]} />
+          : <div class:list={['kuca-slika', `ks${n}`, 'slika-mjesto']} aria-hidden="true">[{T.fotografija}]</div>)}
+      </div>
+      <div class="stog">
+        <p class="nadnaslov">{T.kuca_i_vrt}</p>
+        <h2>{T.kuca_naslov}</h2>
+        <p class="tekst-2">{T.kuca_tekst}</p>
+        <ul class="tockice">{T.kuca_popis.map((x) => <li>{x}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="lokacija" class="omot sekcija">
+    <div class="lokacija">
+      <div class="stog">
+        <p class="nadnaslov svijetlo">{T.lokacija}</p>
+        <h2>{T.lokacija_naslov}</h2>
+        <p>{T.lokacija_tekst}</p>
+        <dl class="udaljenosti">
+          {T.udaljenosti.map(([m, d]) => <div><dt>{m}</dt><dd>{d}</dd></div>)}
+        </dl>
+      </div>
+      <a class="karta" href={podaci.kuca.geo.lat ? `https://www.openstreetmap.org/?mlat=${podaci.kuca.geo.lat}&mlon=${podaci.kuca.geo.lng}#map=16/${podaci.kuca.geo.lat}/${podaci.kuca.geo.lng}` : `https://www.openstreetmap.org/search?query=${encodeURIComponent(podaci.kuca.adresa)}`} target="_blank" rel="noopener">
+        <span>{podaci.kuca.adresa}</span>
+        <span class="gumb">{T.karta} ↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="upit" class="omot sekcija">
+    <div class="dva-stupca vrh">
+      <div class="stog">
+        <p class="nadnaslov">{T.upit}</p>
+        <h2>{T.upit_naslov}</h2>
+        <p class="tekst-2">{T.upit_tekst}</p>
+        <KontaktGumbi />
+        {(podaci.kuca.telefon || podaci.kuca.email) && <p class="mala">{[podaci.kuca.telefon, podaci.kuca.email].filter(Boolean).join(' · ')}</p>}
+      </div>
+      <ObrazacUpita jezik={jezik} />
+    </div>
+  </section>
+
+  <script type="application/json" id="apartmani-podaci" set:html={JSON.stringify(zaSkriptu)} />
+  <script type="module" src="/js/naslovnica.js" is:inline></script>
+</Osnovni>
+
+<style>
+  .uvod { padding-top: 48px; }
+  .uvod-red { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; }
+  .uvod-tekst { display: flex; flex-direction: column; gap: 20px; }
+  .veliki { font-size: 19px; max-width: 540px; }
+  .trazi { padding: 16px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: end; margin-top: 8px; }
+  .trazi > :global(label) { grid-column: span 2; }
+  .trazi > :global(label:nth-child(-n+2)) { grid-column: span 3; }
+  .trazi .gumb { grid-column: 1 / -1; }
+  @media (max-width: 420px) { .trazi > :global(label), .trazi > :global(label:nth-child(-n+2)) { grid-column: span 3; } .trazi > :global(label:nth-child(5)) { grid-column: span 6; } }
+  .uvod-slika { width: 100%; aspect-ratio: 4 / 3.2; object-fit: cover; border-radius: 18px; }
+  .cinjenice { list-style: none; margin: 40px 0 0; padding: 20px 0; display: flex; flex-wrap: wrap; gap: 12px 32px; border-block: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+  .cinjenice b { color: var(--navy); }
+  .sekcija-glava { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 24px; margin-bottom: 28px; }
+  .uz-naslov { max-width: 440px; }
+  .kartice-ap { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+  .kartica-ap { text-decoration: none; color: inherit; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s; }
+  .kartica-ap:hover { border-color: var(--slate); color: inherit; }
+  .kartica-ap.nedostupno { opacity: .7; }
+  .ap-slika { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .ap-tijelo { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .ap-dno { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; min-height: 36px; }
+  .ap-cijena { font-size: 15px; color: var(--ink-2); }
+  .ap-cijena :global(b) { color: var(--navy); font-size: 18px; }
+  .dva-stupca { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center; }
+  .dva-stupca.vrh { align-items: start; }
+  .stog { display: flex; flex-direction: column; gap: 16px; }
+  .kuca-slike { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 1fr 1fr; gap: 12px; aspect-ratio: 1; }
+  .kuca-slika { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+  .ks0 { grid-row: 1 / 3; }
+  .lokacija { background: var(--navy); color: #fff; border-radius: 20px; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; align-items: center; }
+  .lokacija h2 { color: #fff; }
+  .lokacija p { color: #D5DDEA; }
+  .svijetlo { color: #F4A9C2; }
+  .udaljenosti { margin: 8px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; }
+  .udaljenosti dt { font-size: 14px; color: #B9C6DA; }
+  .udaljenosti dd { margin: 0; font-family: var(--f-naslov); font-size: 26px; }
+  .karta { aspect-ratio: 4 / 3; background: var(--navy-2); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: #D5DDEA; text-decoration: none; text-align: center; padding: 24px; }
+  .karta:hover { color: #fff; }
+</style>

@@ -1,0 +1,43 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/figtree';
+import '../styles/global.css';
+import Zaglavlje from '../components/Zaglavlje.astro';
+import Podnozje from '../components/Podnozje.astro';
+import { t, JEZICI, tekstoviZaSkripte } from '../i18n/ui.js';
+
+const { jezik, naslov, opis, alternative, jsonLd, slika } = Astro.props;
+const T = t(jezik);
+const kanonski = new URL(Astro.url.pathname, Astro.site).href;
+const OG_JEZIK = { hr: 'hr_HR', en: 'en_GB', de: 'de_DE', it: 'it_IT' };
+---
+<!doctype html>
+<html lang={jezik}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{naslov}</title>
+  <meta name="description" content={opis ?? T.meta_opis}>
+  <link rel="canonical" href={kanonski}>
+  {alternative && JEZICI.map((j) => <link rel="alternate" hreflang={j} href={new URL(alternative[j], Astro.site).href}>)}
+  {alternative && <link rel="alternate" hreflang="x-default" href={new URL(alternative.en, Astro.site).href}>}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={naslov}>
+  <meta property="og:description" content={opis ?? T.meta_opis}>
+  <meta property="og:url" content={kanonski}>
+  <meta property="og:locale" content={OG_JEZIK[jezik]}>
+  <meta property="og:site_name" content="Apartments Rašpolić">
+  {slika && <meta property="og:image" content={new URL(slika, Astro.site).href}>}
+  <meta name="theme-color" content="#1F3567">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  <script type="application/json" id="tekstovi" set:html={JSON.stringify(tekstoviZaSkripte(jezik))} />
+</head>
+<body>
+  <Zaglavlje jezik={jezik} alternative={alternative} />
+  <main id="sadrzaj">
+    <slot />
+  </main>
+  <Podnozje jezik={jezik} />
+</body>
+</html>

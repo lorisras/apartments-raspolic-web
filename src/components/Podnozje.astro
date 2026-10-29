@@ -1,0 +1,19 @@
+---
+import { t, url } from '../i18n/ui.js';
+import podaci from '../data/apartmani.json';
+const { jezik } = Astro.props;
+const T = t(jezik);
+---
+<footer class="podnozje">
+  <div class="omot">
+    <div>
+      <p class="ime">Apartments Rašpolić</p>
+      <p>{podaci.kuca.adresa}</p>
+    </div>
+    <nav aria-label={T.impressum}>
+      <a href={url.stranica(jezik, 'upit')}>{T.nav_upit}</a>
+      <a href={url.stranica(jezik, 'impressum')}>{T.impressum}</a>
+      <a href={url.stranica(jezik, 'privatnost')}>{T.privatnost}</a>
+    </nav>
+  </div>
+</footer>

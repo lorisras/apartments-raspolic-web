@@ -1,0 +1,12 @@
+---
+import Osnovni from '../layouts/Osnovni.astro';
+import { t, url } from '../i18n/ui.js';
+const T = t('hr'), E = t('en');
+---
+<Osnovni jezik="hr" naslov="404 – Apartments Rašpolić">
+  <div class="omot" style="padding-top:64px;display:grid;gap:16px">
+    <h1>{T.stranica_ne_postoji}</h1>
+    <p class="tekst-2" lang="en">{E.stranica_ne_postoji}</p>
+    <p><a class="gumb glavni" href={url.naslovnica('hr')}>{T.na_naslovnicu}</a> <a class="gumb" href={url.naslovnica('en')} lang="en">{E.na_naslovnicu}</a></p>
+  </div>
+</Osnovni>
