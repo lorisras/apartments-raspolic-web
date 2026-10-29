@@ -279,8 +279,80 @@ function veziKalendari(el) {
   };
 }
 
+// ---------------------------------------------------------------- Sigurnost (dvofaktorska prijava)
+const TFA = { korak: null, tajna: '', uri: '', kodovi: null };
+function karticaSigurnost() {
+  const d = S.podaci.dvofaktorska || {};
+  if (TFA.kodovi) return `<section class="kartica">
+    <h2>Rezervni kodovi</h2>
+    <p class="upozorenje">Spremite ih sada (ispis ili datoteka na sigurnom mjestu). Svaki vrijedi jednom, za prijavu kad mobitel nije pri ruci. Više se neće prikazati.</p>
+    <div class="kodovi">${TFA.kodovi.map(esc).join('<br>')}</div>
+    <div class="red"><button type="button" class="gumb" id="t-preuzmi">Preuzmi kao datoteku</button><button type="button" class="gumb glavni" id="t-spremio">Spremio sam kodove</button></div>
+  </section>`;
+  if (TFA.korak === 'skeniraj') return `<section class="kartica">
+    <h2>Uključivanje dvofaktorske prijave</h2>
+    <ol class="mala">
+      <li>Na mobitelu instalirajte <b>Google Authenticator</b> (ili Microsoft Authenticator).</li>
+      <li>U aplikaciji: <b>+</b> → <b>Skeniraj QR kod</b> i skenirajte kod ispod. Ako ste na mobitelu: <b>Unesi ključ za postavljanje</b> i prepišite ključ.</li>
+      <li>Upišite 6 brojki koje aplikacija prikaže.</li>
+    </ol>
+    <div class="qr" id="t-qr" role="img" aria-label="QR kod za aplikaciju"></div>
+    <p class="mala">Ključ: <span class="kljuc">${esc(TFA.tajna.replace(/(.{4})/g, '$1 ').trim())}</span></p>
+    <div class="mreza"><label>Kod iz aplikacije<input id="t-kod" inputmode="numeric" autocomplete="one-time-code" maxlength="7"></label>
+      <button type="button" class="gumb glavni" id="t-ukljuci">Uključi</button><button type="button" class="gumb" id="t-odustani">Odustani</button></div>
+  </section>`;
+  return `<section class="kartica">
+    <h2>Dvofaktorska prijava</h2>
+    ${d.ukljucena
+      ? `<p><b class="stanje-ok">Uključena.</b> Pri prijavi se uz lozinku traži kod s mobitela. Preostalo rezervnih kodova: <b>${d.rezervnih}</b>.</p>
+         <div class="mreza"><label>Vaša lozinka<input type="password" id="t-loz" autocomplete="current-password"></label><label>Kod iz aplikacije<input id="t-kod" inputmode="numeric" autocomplete="one-time-code" maxlength="12"></label>
+         <button type="button" class="gumb" id="t-novi">Novi rezervni kodovi</button><button type="button" class="gumb opasno" id="t-iskljuci">Isključi</button></div>`
+      : `<p class="mala">Uz lozinku traži se i 6 brojki iz aplikacije na mobitelu: tko sazna lozinku, bez vašeg mobitela ne može ući. Preporučeno, posebno kad web ode u javnost.</p>
+         <div class="mreza"><label>Vaša lozinka<input type="password" id="t-loz" autocomplete="current-password"></label><button type="button" class="gumb glavni" id="t-pocni">Uključi dvofaktorsku prijavu</button></div>`}
+    <p class="mala">Izgubljen mobitel i rezervni kodovi: u cPanelu → File Manager → <code>web-podaci</code> obrišite <code>dvofaktorska.json</code>, pa se prijavite samo lozinkom.</p>
+  </section>`;
+}
+function veziSigurnost(el) {
+  const loz = () => $('#t-loz')?.value || '';
+  const kod = () => $('#t-kod')?.value.trim() || '';
+  if (TFA.korak === 'skeniraj' && !TFA.kodovi) {
+    try { const q = qrcode(0, 'M'); q.addData(TFA.uri); q.make(); $('#t-qr').innerHTML = q.createSvgTag(4, 8); } catch { $('#t-qr').hidden = true; }
+  }
+  $('#t-pocni')?.addEventListener('click', async () => {
+    if (!loz()) return poruka('Upišite svoju lozinku.');
+    const r = await api('2fa-pocni', { lozinka: loz() });
+    Object.assign(TFA, { korak: 'skeniraj', tajna: r.tajna, uri: r.uri });
+    render();
+  });
+  $('#t-ukljuci')?.addEventListener('click', async () => {
+    const r = await api('2fa-ukljuci', { kod: kod() });
+    Object.assign(TFA, { korak: null, kodovi: r.kodovi });
+    poruka('Dvofaktorska prijava je uključena');
+    render();
+  });
+  $('#t-odustani')?.addEventListener('click', () => { TFA.korak = null; render(); });
+  $('#t-novi')?.addEventListener('click', async () => {
+    const r = await api('2fa-kodovi', { lozinka: loz(), kod: kod() });
+    TFA.kodovi = r.kodovi;
+    render();
+  });
+  $('#t-iskljuci')?.addEventListener('click', async (e) => {
+    if (e.target.dataset.ok !== '1') { e.target.dataset.ok = '1'; e.target.textContent = 'Potvrdi isključivanje'; return; }
+    await api('2fa-iskljuci', { lozinka: loz(), kod: kod() });
+    poruka('Dvofaktorska prijava je isključena');
+    render();
+  });
+  $('#t-preuzmi')?.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([`Apartments Rašpolić – admin weba\nRezervni kodovi (${new Date().toLocaleDateString('hr-HR')})\n\n${TFA.kodovi.join('\n')}\n\nSvaki kod vrijedi jednom.\n`], { type: 'text/plain' }));
+    a.download = 'admin-web-rezervni-kodovi.txt';
+    a.click();
+  });
+  $('#t-spremio')?.addEventListener('click', () => { TFA.kodovi = null; render(); });
+}
+
 // ---------------------------------------------------------------- okvir
-const KARTICE = { cijene: [karticaCijene, veziCijene], osnovno: [karticaOsnovno, veziOsnovno], zatvoreno: [karticaZatvoreno, veziZatvoreno], kalendari: [karticaKalendari, veziKalendari] };
+const KARTICE = { cijene: [karticaCijene, veziCijene], osnovno: [karticaOsnovno, veziOsnovno], zatvoreno: [karticaZatvoreno, veziZatvoreno], kalendari: [karticaKalendari, veziKalendari], sigurnost: [karticaSigurnost, veziSigurnost] };
 function render() {
   const el = $('#app'), [html, vezi] = KARTICE[S.kartica];
   const x = scrollX, y = scrollY, omot = $('.omot')?.scrollLeft;

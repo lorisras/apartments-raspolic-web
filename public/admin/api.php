@@ -29,7 +29,17 @@ function stanje(): array {
         'postavke' => citaj('postavke.json', ['ical' => [], 'kanali' => ['booking' => 0, 'airbnb' => 0]]),
         'ical' => array_map(fn($s) => ['uspjeh' => $s['uspjeh'] ?? null, 'pokusaj' => $s['pokusaj'] ?? null, 'greska' => $s['greska'] ?? '', 'rasponi' => count($s['rasponi'] ?? [])], citaj('ical-stanje.json')),
         'dostupnost' => citaj('dostupnost.json', ['azurirano' => null, 'apartmani' => []]),
+        'dvofaktorska' => ['ukljucena' => tfa_ukljucen((string)prijavljen()), 'rezervnih' => tfa_rezervnih((string)prijavljen())],
     ];
+}
+
+/** Osjetljive radnje traže vlastitu lozinku (i kod, ako je 2FA uključena). */
+function potvrdi_lozinku(string $korisnik, array $u): void {
+    if (!ogranicenje("potvrda|$korisnik", 10, 900, false)) json_odgovor(['greska' => 'previse', 'poruka' => 'Previše pokušaja. Pokušajte za 15 minuta.'], 429);
+    if (!provjeri_lozinku($korisnik, (string)($u['lozinka'] ?? ''))) {
+        ogranicenje("potvrda|$korisnik", 10, 900);
+        json_odgovor(['greska' => 'lozinka', 'poruka' => 'Lozinka nije točna.'], 403);
+    }
 }
 
 switch ($op) {
@@ -133,6 +143,41 @@ case 'osvjezi':
     if (!ogranicenje('osvjezi', 6, 600)) json_odgovor(['greska' => 'previse', 'poruka' => 'Pričekajte nekoliko minuta.'], 429);
     $r = uz_bravu(fn() => ical_sinkroniziraj());
     json_odgovor(['ok' => true, 'rezultat' => $r] + stanje());
+
+// ----- dvofaktorska prijava -----
+case '2fa-pocni':                       // lozinka → nova tajna (čeka potvrdu kodom)
+    potvrdi_lozinku($korisnik, $u);
+    if (tfa_ukljucen($korisnik)) json_odgovor(['greska' => 'vec', 'poruka' => 'Dvofaktorska prijava je već uključena.'], 400);
+    $_SESSION['nova_tajna'] = tfa_nova_tajna();
+    json_odgovor(['ok' => true, 'tajna' => $_SESSION['nova_tajna'], 'uri' => tfa_otpauth($korisnik, $_SESSION['nova_tajna'])]);
+
+case '2fa-ukljuci':                     // kod iz aplikacije potvrđuje da je tajna dobro upisana
+    $tajna = $_SESSION['nova_tajna'] ?? '';
+    if (!$tajna) json_odgovor(['greska' => 'tajna', 'poruka' => 'Počnite ispočetka.'], 400);
+    $korak = totp_provjeri($tajna, preg_replace('/\s/', '', (string)($u['kod'] ?? '')), 0);
+    if ($korak === null) json_odgovor(['greska' => 'kod', 'poruka' => 'Kod nije točan. Provjerite da je sat na mobitelu točan i upišite novi kod.'], 400);
+    $kodovi = tfa_rezervni_kodovi();
+    $ver = bin2hex(random_bytes(8));
+    tfa_spremi($korisnik, ['tajna' => $tajna, 'zadnji' => $korak, 'rezerva' => array_map(fn($k) => password_hash(str_replace('-', '', $k), PASSWORD_DEFAULT), $kodovi), 'ver' => $ver]);
+    unset($_SESSION['nova_tajna']);
+    $_SESSION['ver'] = $ver;            // ova sesija ostaje, sve druge se odjavljuju
+    json_odgovor(['ok' => true, 'kodovi' => $kodovi] + stanje());
+
+case '2fa-iskljuci':
+    potvrdi_lozinku($korisnik, $u);
+    if (!tfa_provjeri($korisnik, (string)($u['kod'] ?? ''))) json_odgovor(['greska' => 'kod', 'poruka' => 'Kod nije točan.'], 400);
+    tfa_spremi($korisnik, null);
+    $_SESSION['ver'] = '';
+    json_odgovor(['ok' => true] + stanje());
+
+case '2fa-kodovi':                      // novi rezervni kodovi (stari prestaju vrijediti)
+    potvrdi_lozinku($korisnik, $u);
+    if (!tfa_provjeri($korisnik, (string)($u['kod'] ?? ''))) json_odgovor(['greska' => 'kod', 'poruka' => 'Kod nije točan.'], 400);
+    $kodovi = tfa_rezervni_kodovi();
+    $t = tfa_svi()[$korisnik];
+    $t['rezerva'] = array_map(fn($k) => password_hash(str_replace('-', '', $k), PASSWORD_DEFAULT), $kodovi);
+    tfa_spremi($korisnik, $t);
+    json_odgovor(['ok' => true, 'kodovi' => $kodovi] + stanje());
 
 case 'odjava':
     odjava();

@@ -41,27 +41,39 @@ php -S localhost:8000 -t dist
 
 (`config.php` traži se u mapi `web-podaci` do 3 razine iznad mape weba.)
 
-## Prva postavka na Plus Hostingu
+## Prva postavka na Plus Hostingu (napravljeno 29.10.2026.)
 
-1. **Domena i SSL**: apartments-raspolic.com usmjerena na hosting, AutoSSL uključen (cPanel → SSL/TLS Status).
-2. **Mapa za podatke**: u početnoj mapi hostinga (`/home/KORISNIK/`, iznad `public_html`) napravite `web-podaci` i u nju kopirajte `posluzitelj/config.primjer.php` kao `config.php`. Upišite e-mail adrese.
-3. **Lozinka za admin**: napravite hash lozinke (cPanel → Terminal ili na svom računalu):
-   `php -r 'echo password_hash("VAŠA-LOZINKA", PASSWORD_DEFAULT), "\n";'`
-   i zalijepite ga u `config.php` pod `'admin'`. Može ih biti više (npr. i Alen).
-4. **E-mail**: u cPanelu napravite adresu `web@apartments-raspolic.com` (s nje se šalju upiti) i uključite **Email Deliverability** (SPF i DKIM) za domenu, da upiti ne završe u spamu.
-5. **FTP račun** s početnom mapom `public_html` (cPanel → FTP Accounts).
-6. **GitHub**: novi privatni repozitorij, u njega ovaj projekt. U Settings → Secrets and variables → Actions dodajte `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`. Svaki `git push` na `main` sam gradi web i prenosi ga (Actions → Deploy).
-7. **Cron** (cPanel → Cron Jobs), svakih 30 minuta:
-   `/usr/local/bin/php /home/KORISNIK/public_html/api/ical-sync.php --tiho`
-   (točnu putanju do PHP-a pokazuje cPanel na stranici Cron Jobs).
-8. **Admin**: prijavite se na `/admin/`, u **Kalendari** zalijepite iCal poveznice za svih 7 apartmana (Booking i Airbnb) i kliknite „Osvježi kalendare sada“. U **Osnovne cijene** upišite cijene, sezone i dodatke.
+Korisnik hostinga je `apartments`, početna mapa `/home/apartments`.
+
+1. **WordPress** uklonjen (Softaculous). U `public_html` ostaju samo `.well-known` i `cgi-bin` od hostinga.
+2. **Zaštita lozinkom dok je web u izradi**: cPanel → Directory Privacy → `public_html` (korisnik `pregled`). Isti redovi su na vrhu `public/.htaccess` jer bi ih prijenos inače prepisao. **Kad web ide u javnost, obrišite tih 5 redaka** i isključite zaštitu u cPanelu.
+3. **Mapa za podatke**: `/home/apartments/web-podaci/` s `config.php` (predložak `posluzitelj/config.primjer.php`). Nikad ne ide na GitHub.
+4. **Lozinka za admin**: hash se upisuje u `config.php` pod `'admin'`. Napravi se privremenom PHP stranicom ili naredbom `php -r 'echo password_hash("LOZINKA", PASSWORD_DEFAULT), "\n";'`.
+5. **Još treba**: e-mail adresa `web@apartments-raspolic.com` i **Email Deliverability** (SPF, DKIM); **cron** (cPanel → Cron Jobs, svakih 30 min): `/usr/local/bin/php /home/apartments/public_html/api/ical-sync.php --tiho`; iCal poveznice u adminu → Kalendari.
+
+## Objava promjena (ručni prijenos)
+
+Plus Hosting nema uključen FTPS, pa se web ne prenosi automatski. Postupak:
+
+1. Promjene → `git add .` → `git commit -m "…"` → `git push`.
+2. GitHub izgradi web (Actions → **Build**, zelena kvačica).
+3. Na tom pokretanju, dolje pod **Artifacts**, preuzmite **web-za-hosting** (zip).
+4. cPanel → File Manager → `public_html` → **Upload** zipa → desni klik → **Extract** u `/public_html` → obrišite zip.
+
+Datoteke koje su u novoj verziji obrisane ostaju na hostingu dok ih ne obrišete ručno (rijetko je važno).
+Ako Plus Hosting uključi FTPS, automatski prijenos se vraća u `.github/workflows/deploy.yml` (FTP-Deploy-Action).
+
+## Dvofaktorska prijava u admin
+
+Admin → **Sigurnost** → lozinka → QR kod u Google Authenticatoru → kod → 8 rezervnih kodova (spremiti, prikazuju se jednom).
+Izgubljen mobitel i rezervni kodovi: cPanel → File Manager → `web-podaci` → obrišite `dvofaktorska.json`, pa se prijavite samo lozinkom i ponovno uključite 2FA.
 
 ## Kako radi
 
 - **Zauzetost**: cron dohvaća 14 iCal kalendara (samo HTTPS adrese Bookinga i Airbnba, najviše 2 MB, 15 s) i iz njih čita samo datume. Imena gostiju, poveznice i brojevi telefona se ne spremaju. Ako neki kalendar ne radi, koristi se zadnji uspješan, a nakon 24 h stiže e-mail upozorenje. Dan odlaska je slobodan za novi dolazak.
 - **Cijene**: cijena dana = ručno postavljena cijena tog dana, inače cijena sezone, inače osnovna cijena godine. Dodatak (€ po noći ili % cijene noći) plaća se za svaku osobu iznad „osnovna cijena vrijedi za“. Bebe do 2 godine se ne broje ni u broj osoba ni u dodatak. Ista pravila su u `public/js/cijene.js` (web i admin) i `public/api/lib.php`.
 - **Upiti**: obrazac šalje e-mail na `email_upiti` (Reply-To = gost) i kratku potvrdu gostu na njegovom jeziku. Ništa se ne sprema na poslužitelju. Zaštita: skriveno polje, najmanje 3 s ispunjavanja, najviše 5 upita na sat s iste adrese. Ako je termin u međuvremenu zauzet, e-mail to označi.
-- **Admin**: prijava lozinkom (bcrypt), blokada 15 min nakon 8 krivih pokušaja, CSRF zaštita, kolačić Secure/HttpOnly/SameSite=Strict, sesija 30 dana. Svaka promjena odmah vrijedi na webu.
+- **Admin**: prijava lozinkom (bcrypt) i po želji kodom s mobitela (TOTP, rezervni kodovi), blokada 15 min nakon 8 krivih pokušaja, CSRF zaštita, kolačić Secure/HttpOnly/SameSite=Strict, sesija 30 dana. Svaka promjena odmah vrijedi na webu.
 
 ## Prije objave
 

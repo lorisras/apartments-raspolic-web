@@ -54,3 +54,8 @@ table.dani td.prazan{color:#B7AFA2}
 .red.sredina{align-items:center}
 .kartice button{white-space:nowrap}
 @media (max-width:640px){.traka{position:static}.kartice{order:3;flex-basis:100%;flex-wrap:nowrap;overflow-x:auto}.tko{margin-left:auto}}
+.prijava{grid-template-rows:auto auto;align-content:center;gap:12px}.odustani{text-align:center;margin:0}
+.qr{background:#fff;padding:10px;border:1px solid var(--line);border-radius:10px;width:max-content}.qr svg{display:block;width:200px;height:200px}
+.kljuc{font-family:ui-monospace,Consolas,monospace;word-break:break-all;background:var(--sunk);padding:6px 10px;border-radius:8px}
+.kodovi{font-family:ui-monospace,Consolas,monospace;font-size:17px;line-height:1.8;background:var(--sunk);padding:10px 16px;border-radius:10px;columns:2;max-width:360px}
+.upozorenje{background:#F6EBD6;color:#6B4A12;border-radius:10px;padding:12px 14px;font-weight:600}
