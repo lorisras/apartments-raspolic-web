@@ -19,7 +19,10 @@ if ((int)($u['trajanje'] ?? 0) < 3000) json_odgovor(['greska' => 'prebrzo'], 400
 if (!ogranicenje('upit|' . klijent_ip(), 5, 3600)) json_odgovor(['greska' => 'previse'], 429);
 
 $ime = $s('ime', 100); $email = $s('email', 160); $tel = $s('telefon', 40); $poruka = $s('poruka', 3000);
-$od = $s('od', 10); $do = $s('do', 10); $ozn = $s('apartman', 40);
+$od = $s('od', 10); $do = $s('do', 10);
+// jedan ili više apartmana (polje 'apartmani'; stari obrazac šalje 'apartman'); prazno = bilo koji slobodan
+$trazeni = $u['apartmani'] ?? (($u['apartman'] ?? '') !== '' ? [$u['apartman']] : []);
+$trazeni = array_values(array_unique(array_filter(array_slice((array)$trazeni, 0, 20), 'is_string')));
 $odrasli = $n('odrasli'); $djeca = $n('djeca'); $bebe = $n('bebe'); $krevetic = !empty($u['krevetic']);
 
 $greske = [];
@@ -27,9 +30,11 @@ if (mb_strlen($ime) < 2) $greske[] = 'ime';
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $greske[] = 'email';
 if (!datum_ok($od) || !datum_ok($do) || $do <= $od || $od < dodaj_dane(danas(), -1)) $greske[] = 'datumi';
 if ($odrasli < 1) $greske[] = 'odrasli';
-$ap = null;
-if ($ozn !== '') { foreach (apartmani() as $a) if ($a['oznaka'] === $ozn) $ap = $a; if (!$ap) $greske[] = 'apartman'; }
-if ($ap && $odrasli + $djeca > (int)($ap['maxOsoba'] ?? 99)) $greske[] = 'kapacitet';   // bebe se ne broje
+$sviAp = apartmani();
+$aps = array_values(array_filter($sviAp, fn($a) => in_array($a['oznaka'], $trazeni, true)));
+if (count($aps) !== count($trazeni)) $greske[] = 'apartman';
+$mjesta = array_sum(array_map(fn($a) => (int)($a['maxOsoba'] ?? 99), $aps));
+if ($aps && $odrasli + $djeca > $mjesta) $greske[] = 'kapacitet';   // bebe se ne broje
 if ($greske) json_odgovor(['greska' => 'polja', 'polja' => $greske], 400);
 
 // Provjera je li termin u međuvremenu zauzet (samo napomena u e-mailu).
@@ -42,12 +47,16 @@ $noci = (int)round((strtotime($do . ' 12:00') - strtotime($od . ' 12:00')) / 864
 $fd = fn($d) => (new DateTimeImmutable($d))->format('d.m.Y.');
 $JEZIK = ['hr' => 'hrvatski', 'en' => 'engleski', 'de' => 'njemački', 'it' => 'talijanski'][$jezik];
 
-if ($ap) {
-    $smjestaj = $ap['naziv'] . ($zauzet($ozn) ? "  ⚠ PREMA KALENDARU ZAUZETO" : '');
+$cijelaKuca = count($aps) === count($sviAp);
+if ($aps) {
+    $smjestaj = ($cijelaKuca ? "CIJELA KUĆA\n           " : '') . implode("\n           ", array_map(
+        fn($a) => $a['naziv'] . ' (do ' . $a['maxOsoba'] . ')' . ($zauzet($a['oznaka']) ? '  ⚠ PREMA KALENDARU ZAUZETO' : ''), $aps))
+        . (count($aps) > 1 ? "\n           ukupno mjesta: $mjesta" : '');
 } else {
-    $slobodni = array_map(fn($a) => $a['naziv'], array_filter(apartmani(), fn($a) => !$zauzet($a['oznaka']) && ($a['maxOsoba'] ?? 99) >= $odrasli + $djeca));
+    $slobodni = array_map(fn($a) => $a['naziv'], array_filter($sviAp, fn($a) => !$zauzet($a['oznaka'])));
     $smjestaj = 'bilo koji slobodan (prema kalendaru slobodni: ' . ($slobodni ? implode(', ', $slobodni) : 'nijedan') . ')';
 }
+$kratko = $cijelaKuca ? 'cijela kuća' : ($aps ? implode(' + ', array_map(fn($a) => preg_replace('/^Apartment /', '', $a['naziv']), $aps)) : 'bilo koji apartman');
 $iznos = $s('iznos', 40);
 
 $tekst = "Novi upit s weba\n\n"
@@ -62,7 +71,7 @@ $tekst = "Novi upit s weba\n\n"
     . "\n—\nOdgovorite izravno na ovaj e-mail (ide gostu).";
 
 $c = konfig();
-$naslov = "Upit: " . ($ap['naziv'] ?? 'bilo koji apartman') . ", {$fd($od)} – {$fd($do)}, $ime";
+$naslov = "Upit: $kratko, " . ($odrasli + $djeca) . " os., {$fd($od)} – {$fd($do)}, $ime";
 if (!posalji_mail($c['email_upiti'], $naslov, $tekst, $email)) json_odgovor(['greska' => 'mail'], 500);
 
 // Potvrda gostu
@@ -74,6 +83,8 @@ $P = [
 ][$jezik];
 $fdg = fn($d) => (new DateTimeImmutable($d))->format($jezik === 'hr' ? 'j. n. Y.' : ($jezik === 'en' ? 'j M Y' : 'd.m.Y'));
 $bilo = ['hr' => 'apartman', 'en' => 'an apartment', 'de' => 'eine Wohnung', 'it' => 'un appartamento'][$jezik];
-posalji_mail($email, $P[0] . ' – Apartments Rašpolić', sprintf($P[1], $ime, $ap['naziv'] ?? $bilo, $fdg($od), $fdg($do)), $c['email_upiti']);
+$kuca = ['hr' => 'cijelu kuću', 'en' => 'the whole house', 'de' => 'das ganze Haus', 'it' => 'tutta la casa'][$jezik];
+$sto = $cijelaKuca ? $kuca : ($aps ? implode(', ', array_column($aps, 'naziv')) : $bilo);
+posalji_mail($email, $P[0] . ' – Apartments Rašpolić', sprintf($P[1], $ime, $sto, $fdg($od), $fdg($do)), $c['email_upiti']);
 
 json_odgovor(['ok' => true]);

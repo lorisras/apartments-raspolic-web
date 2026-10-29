@@ -14,6 +14,12 @@ const T = t(jezik);
 const aps = podaci.apartmani;
 const kuca = slike('kuca');
 const zaSkriptu = aps.map((a) => ({ oznaka: a.oznaka, naziv: a.naziv, maxOsoba: a.maxOsoba, url: url.apartman(jezik, a.oznaka) }));
+const ukupnoOsoba = aps.reduce((z, a) => z + a.maxOsoba, 0);
+// katovi kuće odozgo prema dolje (za crtež u dijelu „Grupe“)
+const REDOSLIJED_KATOVA = ['potkrovlje', '2. kat', '1. kat', 'prizemlje'];
+const katovi = [...new Set(aps.map((a) => a.kat?.hr).filter(Boolean))]
+  .sort((x, y) => REDOSLIJED_KATOVA.indexOf(x) - REDOSLIJED_KATOVA.indexOf(y))
+  .map((k) => ({ naziv: aps.find((a) => a.kat?.hr === k).kat[jezik], aps: aps.filter((a) => a.kat?.hr === k) }));
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: 'Apartments Rašpolić',
   address: { '@type': 'PostalAddress', streetAddress: 'Trinajstići 31B', postalCode: '51215', addressLocality: 'Kastav', addressCountry: 'HR' },
@@ -29,7 +35,7 @@ const jsonLd = {
         <h1>{T.hero_naslov}</h1>
         <p class="tekst-2 veliki">{T.hero_tekst}</p>
         <form class="kartica trazi" id="trazi" aria-label={T.obrazac_termin}>
-          <OdabirGostiju jezik={jezik} maxOsoba={5} prefiks="n" />
+          <OdabirGostiju jezik={jezik} maxOsoba={ukupnoOsoba} prefiks="n" />
           <button type="submit" class="gumb glavni">{T.provjeri}</button>
         </form>
       </div>
@@ -49,6 +55,7 @@ const jsonLd = {
       <div><p class="nadnaslov">{T.smjestaj}</p><h2>{T.sedam_apartmana}</h2></div>
       <p class="mala uz-naslov">{T.smjestaj_tekst}</p>
     </div>
+    <div class="grupa kartica" id="grupa" aria-live="polite" hidden></div>
     <div class="kartice-ap">
       {aps.map((a) => {
         const s = slike(`apartmani/${a.oznaka}`)[0];
@@ -68,6 +75,31 @@ const jsonLd = {
           </a>
         );
       })}
+    </div>
+  </section>
+
+  <section id="grupe" class="omot sekcija">
+    <div class="grupe">
+      <div class="stog">
+        <p class="nadnaslov">{T.grupe_nad}</p>
+        <h2>{T.grupe_naslov}</h2>
+        <p class="tekst-2">{T.grupe_tekst}</p>
+        <ul class="tockice">{T.grupe_popis.map((x) => <li>{x}</li>)}</ul>
+        <p class="mala">{T.grupe_savjet}</p>
+        <div><a class="gumb glavni" href="#upit" data-cijela-kuca>{T.grupe_gumb}</a></div>
+      </div>
+      <figure class="kuca-crtez" aria-label={`${T.cijela_kuca}: ${aps.length} · ${T.do_osoba(ukupnoOsoba)}`}>
+        <div class="krov" aria-hidden="true"></div>
+        {katovi.map((k) => (
+          <div class="kat">
+            <span class="kat-naziv">{k.naziv}</span>
+            <div class="kat-aps">
+              {k.aps.map((a) => <a href={url.apartman(jezik, a.oznaka)} class="kat-ap"><b>{a.naziv.replace(/^Apartment /, '')}</b><span>{T.do_osoba(a.maxOsoba)}</span></a>)}
+            </div>
+          </div>
+        ))}
+        <figcaption><b>{T.cijela_kuca}</b> · {aps.length} {T.cinjenice[0].split(',')[0]} · {T.do_osoba(ukupnoOsoba)}</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -160,4 +192,22 @@ const jsonLd = {
   .udaljenosti dd { margin: 0; font-family: var(--f-naslov); font-size: 26px; }
   .karta { aspect-ratio: 4 / 3; background: var(--navy-2); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: #D5DDEA; text-decoration: none; text-align: center; padding: 24px; }
   .karta:hover { color: #fff; }
+  .grupa { padding: 20px; margin-bottom: 24px; border-color: var(--slate); display: grid; gap: 12px; }
+  .grupa :global(h3) { margin: 0; }
+  .grupa :global(.komb) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .grupa :global(.komb-ap) { font-weight: 600; color: var(--navy); }
+  .grupa :global(.komb-ap a) { color: inherit; }
+  .grupa :global(.komb b) { color: var(--navy); font-size: 18px; }
+  .grupe { background: var(--card, #fff); border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px 48px; align-items: center; }
+  .kuca-crtez { margin: 0; display: grid; gap: 6px; max-width: 460px; justify-self: center; width: 100%; }
+  .krov { height: 54px; background: var(--navy); clip-path: polygon(50% 0, 100% 100%, 0 100%); margin: 0 -12px; }
+  .kat { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: center; background: var(--bg); border-radius: 8px; padding: 8px 10px; }
+  .kat-naziv { font-size: 12px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .06em; }
+  .kat-aps { display: flex; gap: 6px; flex-wrap: wrap; }
+  .kat-ap { flex: 1; min-width: 92px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; text-decoration: none; color: var(--ink-2); display: grid; font-size: 13px; }
+  .kat-ap b { color: var(--navy); font-size: 15px; }
+  .kat-ap:hover { border-color: var(--pink); }
+  .kuca-crtez figcaption { text-align: center; margin-top: 8px; color: var(--ink-2); }
+  .kuca-crtez figcaption b { color: var(--pink); }
+  @media (max-width: 420px) { .kat { grid-template-columns: 1fr; gap: 6px; } }
 </style>

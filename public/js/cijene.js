@@ -105,3 +105,73 @@ export const danas = () => {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
+
+// ---------------------------------------------------------------- Više apartmana (grupe, cijela kuća)
+
+/**
+ * Raspored osoba po apartmanima tako da je dodatak za osobe što manji:
+ * prvo svakom apartmanu po jedna osoba, zatim do osnovnog broja, pa tek onda dodatna mjesta.
+ * aps = [{ maxOsoba, cjenik }]. Vraća niz brojeva osoba ili null ako je osoba previše.
+ */
+export function rasporedOsoba(aps, osoba) {
+  const ukupnoMjesta = aps.reduce((z, a) => z + Number(a.maxOsoba || 0), 0);
+  if (osoba > ukupnoMjesta) return null;
+  const n = aps.map(() => 0);
+  const granice = [aps.map(() => 1), aps.map((a) => Math.min(a.maxOsoba, Number(a.cjenik?.osnovnaZa || a.maxOsoba))), aps.map((a) => a.maxOsoba)];
+  let ostalo = osoba;
+  for (const g of granice) {
+    for (let i = 0; i < aps.length && ostalo > 0; i++) {
+      const dodaj = Math.min(ostalo, Math.max(0, g[i] - n[i]));
+      n[i] += dodaj;
+      ostalo -= dodaj;
+    }
+  }
+  return n;
+}
+
+/**
+ * Izračun za više apartmana zajedno. aps = [{ oznaka, maxOsoba, zauzeto, cjenik }].
+ * Vraća { noci, ukupno, osobe: [..], zauzeti: [oznake], greska } – greska kao kod izracun().
+ */
+export function izracunVise(aps, od, doo, gosti) {
+  const n = brojNoci(od, doo);
+  const out = { noci: n, ukupno: null, osobe: [], zauzeti: [], greska: null, minNoci: 1 };
+  if (!n) return { ...out, greska: 'datumi' };
+  const osobe = rasporedOsoba(aps, osobeZaRacun(gosti));
+  if (!osobe) return { ...out, greska: 'kapacitet' };
+  out.osobe = osobe;
+  out.zauzeti = aps.filter((a) => !slobodno(a.zauzeto, od, doo)).map((a) => a.oznaka);
+  if (out.zauzeti.length) return { ...out, greska: 'zauzeto' };
+  let ukupno = 0, bezCijene = false;
+  aps.forEach((a, i) => {
+    const r = izracun(a, od, doo, { odrasli: osobe[i] });
+    if (r.ukupno == null) bezCijene = true; else ukupno += r.ukupno;
+    out.minNoci = Math.max(out.minNoci, r.minNoci || 1);
+  });
+  if (bezCijene) return { ...out, greska: 'bezCijene' };
+  out.ukupno = Math.round(ukupno * 100) / 100;
+  if (n < out.minNoci) out.greska = 'minNoci';
+  return out;
+}
+
+/**
+ * Kombinacije slobodnih apartmana za grupu: samo one bez suvišnog apartmana,
+ * poredane po broju apartmana, pa po cijeni (ili višku mjesta kad nema cijene). Najviše 'koliko'.
+ */
+export function kombinacije(aps, od, doo, gosti, koliko = 3) {
+  const osoba = osobeZaRacun(gosti);
+  const slobodni = aps.filter((a) => slobodno(a.zauzeto, od, doo));
+  const mjesta = (k) => k.reduce((z, a) => z + Number(a.maxOsoba || 0), 0);
+  const out = [];
+  for (let maska = 1; maska < 1 << slobodni.length; maska++) {
+    const k = slobodni.filter((_, i) => maska & (1 << i));
+    if (mjesta(k) < osoba) continue;
+    if (k.some((a) => mjesta(k) - a.maxOsoba >= osoba)) continue;          // neki apartman je višak
+    const r = izracunVise(k, od, doo, gosti);
+    out.push({ apartmani: k, mjesta: mjesta(k), ukupno: r.ukupno, noci: r.noci });
+  }
+  out.sort((x, y) => x.apartmani.length - y.apartmani.length
+    || (x.ukupno ?? Infinity) - (y.ukupno ?? Infinity)
+    || x.mjesta - y.mjesta);
+  return out.slice(0, koliko);
+}

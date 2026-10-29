@@ -46,29 +46,43 @@ switch ($op) {
 case 'stanje':
     json_odgovor(stanje() + ['korisnik' => $korisnik]);
 
-// Osnovna pravila cjenika jednog apartmana: osnovnaZa, dodatak, minNoci, godine (cijena, minNoci, sezone).
+// Osnovne cijene svih apartmana odjednom: zajednička razdoblja po godini + za svaki apartman
+// osnovnaZa, dodatak, minNoci i godine (cijena, minNoci, sezone = cijene u razdobljima). Ručne cijene po danima ostaju.
 case 'osnovno':
-    $o = $u['apartman'] ?? '';
-    if (!$apOk($o)) json_odgovor(['greska' => 'apartman'], 400);
-    $godine = [];
-    foreach (($u['godine'] ?? []) as $g => $x) {
+    $razdoblja = [];
+    foreach ((array)($u['razdoblja'] ?? []) as $g => $lista) {
         if (!preg_match('/^20\d\d$/', (string)$g)) continue;
-        $sezone = [];
-        foreach (($x['sezone'] ?? []) as $s) {
-            if (!$mmdd($s['od'] ?? '') || !$mmdd($s['do'] ?? '') || $broj($s['cijena'] ?? null, 1) === null) json_odgovor(['greska' => 'sezona', 'poruka' => "Sezona u $g.: provjerite datume (dd.mm.) i cijenu."], 400);
-            $sezone[] = ['od' => $s['od'], 'do' => $s['do'], 'cijena' => $broj($s['cijena'], 1)] + (($m = (int)($s['minNoci'] ?? 0)) > 1 ? ['minNoci' => min($m, 60)] : []);
+        foreach ((array)$lista as $r) {
+            if (!$mmdd($r['od'] ?? '') || !$mmdd($r['do'] ?? '')) json_odgovor(['greska' => 'razdoblje', 'poruka' => "Razdoblje u $g.: provjerite datume."], 400);
+            $razdoblja[(string)$g][] = ['od' => $r['od'], 'do' => $r['do']] + (($m = (int)($r['minNoci'] ?? 0)) > 1 ? ['minNoci' => min($m, 60)] : []);
         }
-        $godine[(string)$g] = ['cijena' => $broj($x['cijena'] ?? null, 1), 'sezone' => $sezone] + (($m = (int)($x['minNoci'] ?? 0)) > 1 ? ['minNoci' => min($m, 60)] : []);
     }
-    $tip = ($u['dodatak']['tip'] ?? '') === 'postotak' ? 'postotak' : 'iznos';
-    uz_bravu(function () use ($o, $u, $godine, $tip, $broj) {
+    $novi = [];
+    foreach (oznake() as $o) {
+        $x = $u['apartmani'][$o] ?? null;
+        if (!is_array($x)) continue;
+        $godine = [];
+        foreach ((array)($x['godine'] ?? []) as $g => $y) {
+            if (!preg_match('/^20\d\d$/', (string)$g)) continue;
+            $sezone = [];
+            foreach ((array)($y['sezone'] ?? []) as $s) {
+                if (!$mmdd($s['od'] ?? '') || !$mmdd($s['do'] ?? '') || $broj($s['cijena'] ?? null, 1) === null) json_odgovor(['greska' => 'sezona', 'poruka' => "$o, $g.: provjerite razdoblja i cijene."], 400);
+                $sezone[] = ['od' => $s['od'], 'do' => $s['do'], 'cijena' => $broj($s['cijena'], 1)] + (($m = (int)($s['minNoci'] ?? 0)) > 1 ? ['minNoci' => min($m, 60)] : []);
+            }
+            $godine[(string)$g] = ['cijena' => $broj($y['cijena'] ?? null, 1), 'sezone' => $sezone] + (($m = (int)($y['minNoci'] ?? 0)) > 1 ? ['minNoci' => min($m, 60)] : []);
+        }
+        $tip = ($x['dodatak']['tip'] ?? '') === 'postotak' ? 'postotak' : 'iznos';
+        $novi[$o] = [
+            'osnovnaZa' => max(1, min(20, (int)($x['osnovnaZa'] ?? 1))),
+            'dodatak' => ['tip' => $tip, 'vrijednost' => $broj($x['dodatak']['vrijednost'] ?? 0, 0, $tip === 'postotak' ? 200 : 10000) ?? 0],
+            'minNoci' => max(1, min(60, (int)($x['minNoci'] ?? 1))),
+            'godine' => $godine,
+        ];
+    }
+    uz_bravu(function () use ($novi, $razdoblja) {
         $c = citaj('cijene.json', ['apartmani' => []]);
-        $cj = $c['apartmani'][$o] ?? [];
-        $cj['osnovnaZa'] = max(1, min(20, (int)($u['osnovnaZa'] ?? 1)));
-        $cj['dodatak'] = ['tip' => $tip, 'vrijednost' => $broj($u['dodatak']['vrijednost'] ?? 0, 0, $tip === 'postotak' ? 200 : 10000) ?? 0];
-        $cj['minNoci'] = max(1, min(60, (int)($u['minNoci'] ?? 1)));
-        $cj['godine'] = $godine;
-        $c['apartmani'][$o] = $cj;
+        foreach ($novi as $o => $cj) $c['apartmani'][$o] = $cj + array_intersect_key($c['apartmani'][$o] ?? [], ['dani' => 1, 'napomena' => 1]);
+        $c['razdoblja'] = $razdoblja;
         zapisi('cijene.json', $c);
     });
     $gotovo();

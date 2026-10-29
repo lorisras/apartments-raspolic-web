@@ -12,7 +12,7 @@ const eur = (n) => (n == null ? '—' : `${Number(n).toLocaleString('hr-HR', { m
 // Osnovna cijena vrijedi za toliko osoba (dogovor 29.10.2026.); ostalo = najveći broj osoba.
 const ZADANO_OSNOVNA_ZA = { 'no-1': 2, 'no-3': 4, 'no-5': 4 };
 
-const S = { podaci: null, kartica: 'cijene', mjesec: danas().slice(0, 7), odabir: { od: '', do: '', aps: new Set(), sidro: null }, osnovnoAp: null };
+const S = { podaci: null, kartica: 'cijene', mjesec: danas().slice(0, 7), odabir: { od: '', do: '', aps: new Set(), sidro: null } };
 
 function poruka(t) {
   const p = $('#poruka');
@@ -134,67 +134,177 @@ function veziCijene(el) {
 }
 
 // ---------------------------------------------------------------- Osnovne cijene
+// Razdoblja (npr. 1.6.–30.9.) su zajednička za sve apartmane; cijene se upisuju u tablicu apartmani × razdoblja.
+// Na web se spremaju kao sezone svakog apartmana, pa izračun (cijene.js, lib.php) ostaje isti.
+// Cjenik iz aplikacije Računi (po noćenju, cijela godina) – polazište za gumb „Popuni iz Računa“.
+const CJENIK_RACUNI = {
+  2026: { studio: 60, 'studio-loft': 60, 'no-1': 80, 'no-2': 100, 'no-4': 100, 'no-3': 120, 'no-5': 120 },
+  2027: { studio: 80, 'studio-loft': 80, 'no-1': 100, 'no-2': 120, 'no-4': 120, 'no-3': 140, 'no-5': 140 },
+};
+const md = (v) => (v ? `${+v.slice(3)}.${+v.slice(0, 2)}.` : '');
+const mmdd = (v) => {
+  const m = String(v).trim().match(/^(\d{1,2})\.\s*(\d{1,2})\.?$/);
+  if (!m || +m[2] < 1 || +m[2] > 12 || +m[1] < 1 || +m[1] > new Date(2024, +m[2], 0).getDate()) return null;
+  return `${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+};
+const broj = (v) => (String(v ?? '').trim() === '' ? null : parseFloat(String(v).replace(',', '.')));
+let NACRT = null;   // nespremljene promjene na kartici Osnovne cijene
+
+function nacrtIzPodataka() {
+  const c = S.podaci.cijene || {}, g0 = new Date().getFullYear();
+  const D = { aps: {}, godine: {} };
+  for (const a of aps()) {
+    const cj = cjenik(a.oznaka);
+    D.aps[a.oznaka] = { osnovnaZa: String(cj.osnovnaZa || ZADANO_OSNOVNA_ZA[a.oznaka] || a.maxOsoba), tip: cj.dodatak?.tip || 'iznos', vrijednost: String(cj.dodatak?.vrijednost || ''), minNoci: String(cj.minNoci || 1) };
+  }
+  const godine = new Set([g0, g0 + 1]);
+  for (const a of aps()) Object.keys(cjenik(a.oznaka).godine || {}).forEach((g) => +g >= g0 && godine.add(+g));
+  Object.keys(c.razdoblja || {}).forEach((g) => +g >= g0 && godine.add(+g));
+  for (const g of [...godine].sort()) {
+    let raz = c.razdoblja?.[g];
+    if (!raz) {                                   // stari zapis: razdoblja iz sezona pojedinih apartmana
+      const m = new Map();
+      for (const a of aps()) for (const s of cjenik(a.oznaka).godine?.[g]?.sezone || []) if (!m.has(s.od + s.do)) m.set(s.od + s.do, { od: s.od, do: s.do, minNoci: s.minNoci });
+      raz = [...m.values()].sort((x, y) => x.od.localeCompare(y.od));
+    }
+    const y = (o) => cjenik(o).godine?.[g] || {};
+    D.godine[g] = {
+      minNoci: String(aps().map((a) => y(a.oznaka).minNoci).find(Boolean) || ''),
+      razdoblja: raz.map((r) => ({ od: md(r.od), do: md(r.do), minNoci: String(r.minNoci || '') })),
+      cijene: Object.fromEntries(aps().map((a) => [a.oznaka, {
+        osnovna: String(y(a.oznaka).cijena ?? ''),
+        r: raz.map((r) => String((y(a.oznaka).sezone || []).find((s) => s.od === r.od && s.do === r.do)?.cijena ?? '')),
+      }])),
+    };
+  }
+  return D;
+}
+
 function karticaOsnovno() {
-  const o = (S.osnovnoAp ||= aps()[0]?.oznaka);
-  const a = aps().find((x) => x.oznaka === o), cj = cjenik(o);
-  const dod = cj.dodatak || { tip: 'iznos', vrijednost: 0 };
-  const g0 = new Date().getFullYear();
-  const godine = [...new Set([g0, g0 + 1, ...Object.keys(cj.godine || {}).map(Number)])].filter((g) => g >= g0).sort();
-  const md = (v) => (v ? `${+v.slice(3)}.${+v.slice(0, 2)}.` : '');
-  const sezona = (s = {}) => `<div class="sezona">
-      <label>Od (dd.mm.)<input data-s="od" value="${esc(md(s.od))}" placeholder="1.6." autocomplete="off"></label>
-      <label>Do, zadnja noć<input data-s="do" value="${esc(md(s.do))}" placeholder="30.9." autocomplete="off"></label>
-      <label>Cijena €<input data-s="cijena" inputmode="decimal" value="${esc(s.cijena ?? '')}"></label>
-      <label>Min. noći<input data-s="minNoci" inputmode="numeric" value="${esc(s.minNoci ?? '')}" placeholder="—"></label>
-      <button type="button" class="x" data-ukloni aria-label="Ukloni sezonu">×</button></div>`;
+  const D = (NACRT ||= nacrtIzPodataka());
+  const ul = (put, v, extra = '') => `<input data-p="${esc(put)}" value="${esc(v)}" autocomplete="off" ${extra}>`;
+  const osobe = (n) => `${n} ${n === 1 ? 'osobu' : n < 5 ? 'osobe' : 'osoba'}`;
   return `<section class="kartica">
     <h2>Osnovne cijene</h2>
-    <p class="mala">Osnovna cijena i sezone vrijede za dane kojima niste posebno promijenili cijenu (Cijene po danima). Dodatak se plaća po noći za svaku osobu iznad osnovnog broja; bebe do 2 godine se ne računaju.</p>
-    <label>Apartman<select id="o-ap">${aps().map((x) => `<option value="${esc(x.oznaka)}" ${x.oznaka === o ? 'selected' : ''}>${esc(x.naziv)} (do ${x.maxOsoba} osoba)</option>`).join('')}</select></label>
-    <div class="mreza">
-      <label>Osnovna cijena vrijedi za<select id="o-za">${Array.from({ length: a.maxOsoba }, (_, i) => i + 1).map((n) => `<option ${n === (cj.osnovnaZa || ZADANO_OSNOVNA_ZA[o] || a.maxOsoba) ? 'selected' : ''} value="${n}">${n} ${n === 1 ? 'osobu' : n < 5 ? 'osobe' : 'osoba'}</option>`).join('')}</select></label>
-      <label>Dodatak za osobu<select id="o-dt"><option value="iznos" ${dod.tip !== 'postotak' ? 'selected' : ''}>€ po noći</option><option value="postotak" ${dod.tip === 'postotak' ? 'selected' : ''}>% cijene noći</option></select></label>
-      <label>Iznos dodatka<input id="o-dv" inputmode="decimal" value="${esc(dod.vrijednost || '')}" placeholder="0"></label>
-      <label>Min. noćenja (zadano)<input id="o-min" inputmode="numeric" value="${esc(cj.minNoci || 1)}"></label>
-    </div>
-    ${godine.map((g) => { const y = cj.godine?.[g] || {}; return `<fieldset class="kartica" data-g="${g}"><h3>${g}.</h3>
-      <div class="mreza"><label>Osnovna cijena € / noć<input data-y="cijena" inputmode="decimal" value="${esc(y.cijena ?? '')}"></label><label>Min. noći<input data-y="minNoci" inputmode="numeric" value="${esc(y.minNoci ?? '')}" placeholder="zadano"></label></div>
-      <div class="sezone">${(y.sezone || []).map(sezona).join('')}</div>
-      <div><button type="button" class="gumb" data-dodaj>+ Sezona</button></div></fieldset>`; }).join('')}
-    <div class="red"><button type="button" class="gumb glavni" id="o-spremi">Spremi ${esc(a.naziv)}</button></div>
-    <template id="t-sezona">${sezona()}</template>
-  </section>`;
+    <p class="mala">Web ove cijene uzima automatski za svaki dan. Pojedine dane mijenjate u „Cijene po danima“ (tamo su ružičasti), a „Vrati na osnovnu“ ih vraća na ove. Razdoblja su zajednička za sve apartmane. Prazno polje u razdoblju znači da vrijedi osnovna cijena godine.</p>
+    <h3>Osobe, dodatak i najmanje noći</h3>
+    <div class="omot"><table class="osn">
+      <thead><tr><th>Apartman</th><th>Cijena vrijedi za</th><th>Dodatak za svaku sljedeću osobu</th><th>Min. noći</th></tr></thead>
+      <tbody>${aps().map((a) => { const x = D.aps[a.oznaka]; return `<tr><th scope="row">${esc(a.naziv)}<span class="mala"> do ${a.maxOsoba}</span></th>
+        <td><select data-p="aps.${a.oznaka}.osnovnaZa">${Array.from({ length: a.maxOsoba }, (_, i) => i + 1).map((n) => `<option value="${n}" ${String(n) === x.osnovnaZa ? 'selected' : ''}>${osobe(n)}</option>`).join('')}</select></td>
+        <td data-dodatak="${a.maxOsoba}"><span class="mala" ${+x.osnovnaZa >= a.maxOsoba ? '' : 'hidden'}>— (ista cijena za sve)</span><div class="dvoje" ${+x.osnovnaZa >= a.maxOsoba ? 'hidden' : ''}>${ul(`aps.${a.oznaka}.vrijednost`, x.vrijednost, 'inputmode="decimal" placeholder="0"')}<select data-p="aps.${a.oznaka}.tip"><option value="iznos" ${x.tip !== 'postotak' ? 'selected' : ''}>€ po noći</option><option value="postotak" ${x.tip === 'postotak' ? 'selected' : ''}>% cijene noći</option></select></div></td>
+        <td>${ul(`aps.${a.oznaka}.minNoci`, x.minNoci, 'inputmode="numeric" class="usko"')}</td></tr>`; }).join('')}</tbody>
+    </table></div>
+  </section>
+  ${Object.entries(D.godine).map(([g, y]) => `<section class="kartica">
+    <h2>${g}.</h2>
+    <h3>Razdoblja</h3>
+    ${y.razdoblja.length ? `<div class="razdoblja">${y.razdoblja.map((r, i) => `<div class="razdoblje">
+      <label>Od (dd.mm.)${ul(`godine.${g}.razdoblja.${i}.od`, r.od, 'placeholder="1.6."')}</label>
+      <label>Do, zadnja noć${ul(`godine.${g}.razdoblja.${i}.do`, r.do, 'placeholder="30.9."')}</label>
+      <label>Min. noći${ul(`godine.${g}.razdoblja.${i}.minNoci`, r.minNoci, 'inputmode="numeric" placeholder="—"')}</label>
+      <button type="button" class="x" data-ukloni="${g}|${i}" aria-label="Ukloni razdoblje">×</button></div>`).join('')}</div>`
+      : '<p class="mala">Nema razdoblja: cijela godina ima osnovnu cijenu.</p>'}
+    <div><button type="button" class="gumb" data-dodaj="${g}">+ Razdoblje</button></div>
+    <h3>Cijene po noći (€)</h3>
+    <div class="omot"><table class="osn">
+      <thead><tr><th>Apartman</th><th>Osnovna<br><span class="mala">${y.razdoblja.length ? 'ostali dani' : 'cijela godina'}</span></th>${y.razdoblja.map((r, i) => `<th data-th="${g}|${i}">${esc(r.od || '?')}–${esc(r.do || '?')}</th>`).join('')}</tr></thead>
+      <tbody>${aps().map((a) => { const x = y.cijene[a.oznaka]; return `<tr><th scope="row">${esc(a.naziv)}</th>
+        <td>${ul(`godine.${g}.cijene.${a.oznaka}.osnovna`, x.osnovna, 'inputmode="decimal" class="usko"')}</td>
+        ${y.razdoblja.map((_, i) => `<td>${ul(`godine.${g}.cijene.${a.oznaka}.r.${i}`, x.r[i] ?? '', 'inputmode="decimal" class="usko" placeholder="osn."')}</td>`).join('')}</tr>`; }).join('')}</tbody>
+    </table></div>
+    <label class="kratko">Min. noći u ${g}. (ako nije drugačije)${ul(`godine.${g}.minNoci`, y.minNoci, 'inputmode="numeric" placeholder="zadano"')}</label>
+  </section>`).join('')}
+  <section class="kartica"><div class="red">
+    <button type="button" class="gumb glavni" id="o-spremi">Spremi osnovne cijene</button>
+    <button type="button" class="gumb" id="o-racuni">Popuni osnovne cijene iz Računa (2026. i 2027.)</button>
+    <button type="button" class="gumb" id="o-ponisti">Poništi promjene</button>
+  </div><p class="mala">„Popuni iz Računa“ samo upiše cijene u polja; spremaju se tek gumbom „Spremi“.</p></section>`;
+}
+
+function procitajNacrt(el) {
+  for (const x of $$('[data-p]', el)) {
+    const put = x.dataset.p.split('.'), kraj = put.pop();
+    put.reduce((o, k) => o[k], NACRT)[kraj] = x.value;
+  }
 }
 function veziOsnovno(el) {
-  $('#o-ap').onchange = (e) => { S.osnovnoAp = e.target.value; render(); };
-  const vezi = (k) => ($('[data-ukloni]', k).onclick = () => k.remove());
-  $$('.sezona', el).forEach(vezi);
-  $$('[data-dodaj]', el).forEach((b) => (b.onclick = () => {
-    const box = b.closest('fieldset').querySelector('.sezone');
-    box.append($('#t-sezona').content.cloneNode(true));
-    vezi(box.lastElementChild);
+  // bez ponovnog iscrtavanja (da klik na Spremi ne nestane): samo osvježi naslove stupaca i polje za dodatak
+  $$('[data-p$=".osnovnaZa"]', el).forEach((x) => (x.onchange = () => {
+    const td = x.closest('tr').querySelector('[data-dodatak]'), ista = +x.value >= +td.dataset.dodatak;
+    td.children[0].hidden = !ista;
+    td.children[1].hidden = ista;
   }));
-  const mmdd = (v) => {
-    const m = String(v).trim().match(/^(\d{1,2})\.\s*(\d{1,2})\.?$/);
-    return m && +m[2] >= 1 && +m[2] <= 12 && +m[1] >= 1 && +m[1] <= 31 ? `${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : null;
+  $$('[data-p*=".razdoblja."]', el).forEach((x) => (x.oninput = () => {
+    const [, g, , i] = x.dataset.p.split('.'), od = $(`[data-p="godine.${g}.razdoblja.${i}.od"]`, el).value, doo = $(`[data-p="godine.${g}.razdoblja.${i}.do"]`, el).value;
+    $(`[data-th="${g}|${i}"]`, el).textContent = `${od || '?'}–${doo || '?'}`;
+  }));
+  $$('[data-dodaj]', el).forEach((b) => (b.onclick = () => {
+    procitajNacrt(el);
+    const y = NACRT.godine[b.dataset.dodaj];
+    y.razdoblja.push({ od: '', do: '', minNoci: '' });
+    Object.values(y.cijene).forEach((c) => c.r.push(''));
+    render();
+  }));
+  $$('[data-ukloni]', el).forEach((b) => (b.onclick = () => {
+    procitajNacrt(el);
+    const [g, i] = b.dataset.ukloni.split('|'), y = NACRT.godine[g];
+    y.razdoblja.splice(+i, 1);
+    Object.values(y.cijene).forEach((c) => c.r.splice(+i, 1));
+    render();
+  }));
+  $('#o-racuni').onclick = () => {
+    procitajNacrt(el);
+    let n = 0;
+    for (const [g, cj] of Object.entries(CJENIK_RACUNI)) {
+      if (!NACRT.godine[g]) continue;
+      for (const [o, v] of Object.entries(cj)) if (NACRT.godine[g].cijene[o]) { NACRT.godine[g].cijene[o].osnovna = String(v); n++; }
+    }
+    render();
+    poruka(n ? 'Cijene iz Računa upisane. Provjerite i kliknite Spremi.' : 'Nema godina 2026. i 2027. u tablici.');
   };
-  const br = (v) => (String(v).trim() === '' ? null : parseFloat(String(v).replace(',', '.')));
+  $('#o-ponisti').onclick = () => { NACRT = null; render(); };
   $('#o-spremi').onclick = async (e) => {
-    const godine = {};
-    for (const fs of $$('fieldset[data-g]', el)) {
-      const sezone = [];
-      for (const s of $$('.sezona', fs)) {
-        const od = mmdd($('[data-s=od]', s).value), doo = mmdd($('[data-s=do]', s).value), c = br($('[data-s=cijena]', s).value);
-        if (!od && !doo && c == null) continue;
-        if (!od || !doo || !(c > 0)) return poruka(`Sezona u ${fs.dataset.g}.: upišite datume kao 1.6. i cijenu.`);
-        sezone.push({ od, do: doo, cijena: c, minNoci: br($('[data-s=minNoci]', s).value) || undefined });
+    procitajNacrt(el);
+    const tijelo = { apartmani: {}, razdoblja: {} };
+    for (const a of aps()) {
+      const x = NACRT.aps[a.oznaka];
+      tijelo.apartmani[a.oznaka] = { osnovnaZa: +x.osnovnaZa, dodatak: { tip: x.tip, vrijednost: broj(x.vrijednost) || 0 }, minNoci: broj(x.minNoci) || 1, godine: {} };
+    }
+    for (const [g, y] of Object.entries(NACRT.godine)) {
+      const raz = [];
+      for (const r of y.razdoblja) {
+        if (!r.od.trim() && !r.do.trim()) continue;
+        const od = mmdd(r.od), doo = mmdd(r.do);
+        if (!od || !doo) return poruka(`Razdoblje u ${g}.: upišite datume kao 1.6. i 30.9.`);
+        raz.push({ od, do: doo, minNoci: broj(r.minNoci) || undefined, i: y.razdoblja.indexOf(r) });
       }
-      const c = br($('[data-y=cijena]', fs).value);
-      if (c != null || sezone.length) godine[fs.dataset.g] = { cijena: c, minNoci: br($('[data-y=minNoci]', fs).value) || undefined, sezone };
+      // isti dan ne smije biti u dva razdoblja
+      const dani = {};
+      for (const r of raz) for (let d = new Date(Date.UTC(2024, +r.od.slice(0, 2) - 1, +r.od.slice(3))), n = 0; n < 366; n++, d.setUTCDate(d.getUTCDate() + 1)) {
+        const k = d.toISOString().slice(5, 10);
+        if (dani[k]) return poruka(`${g}.: razdoblja ${md(dani[k].od)}–${md(dani[k].do)} i ${md(r.od)}–${md(r.do)} se preklapaju.`);
+        dani[k] = r;
+        if (k === r.do) break;
+      }
+      tijelo.razdoblja[g] = raz.map(({ od, do: doo, minNoci }) => ({ od, do: doo, minNoci }));
+      for (const a of aps()) {
+        const c = y.cijene[a.oznaka], osn = broj(c.osnovna);
+        if (osn != null && !(osn > 0)) return poruka(`${a.naziv}, ${g}.: cijena mora biti broj veći od 0.`);
+        const sezone = [];
+        for (const r of raz) {
+          const v = broj(c.r[r.i]);
+          if (v == null) continue;
+          if (!(v > 0)) return poruka(`${a.naziv}, ${g}.: cijena mora biti broj veći od 0.`);
+          sezone.push({ od: r.od, do: r.do, cijena: v, minNoci: r.minNoci });
+        }
+        if (osn != null || sezone.length) tijelo.apartmani[a.oznaka].godine[g] = { cijena: osn, minNoci: broj(y.minNoci) || undefined, sezone };
+      }
     }
     e.target.disabled = true;
     try {
-      await api('osnovno', { apartman: S.osnovnoAp, osnovnaZa: +$('#o-za').value, dodatak: { tip: $('#o-dt').value, vrijednost: br($('#o-dv').value) || 0 }, minNoci: br($('#o-min').value) || 1, godine });
+      await api('osnovno', tijelo);
+      NACRT = null;
       poruka('Osnovne cijene spremljene');
       render();
     } finally { e.target.disabled = false; }

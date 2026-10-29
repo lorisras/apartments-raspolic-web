@@ -4,17 +4,22 @@ import { t } from '../i18n/ui.js';
 import podaci from '../data/apartmani.json';
 const { jezik, apartman = '' } = Astro.props;
 const T = t(jezik);
+const ukupnoOsoba = podaci.apartmani.reduce((z, a) => z + a.maxOsoba, 0);
 ---
 <form class="kartica obrazac-upita" method="post" action="/api/upit.php" data-jezik={jezik} novalidate aria-label={T.upit}>
   <label class="polje">{T.dolazak}<input type="date" name="od" required></label>
   <label class="polje">{T.odlazak}<input type="date" name="do" required></label>
-  <label class="polje cijeli">{T.apartman}
-    <select name="apartman">
-      <option value="">{T.bilo_koji}</option>
-      {podaci.apartmani.map((a) => <option value={a.oznaka} data-max={a.maxOsoba} selected={a.oznaka === apartman}>{a.naziv}</option>)}
-    </select>
-  </label>
-  <div class="gosti cijeli"><OdabirGostiju jezik={jezik} datumi={false} maxOsoba={5} prefiks={`u-${apartman || 'x'}`} /></div>
+  <fieldset class="cijeli odabir-ap" data-apartmani>
+    <legend>{T.apartmani_odabir}</legend>
+    <div class="cipovi">
+      {podaci.apartmani.map((a) => (
+        <label class="cip"><input type="checkbox" name="apartman" value={a.oznaka} data-max={a.maxOsoba} data-naziv={a.naziv} checked={a.oznaka === apartman} />{a.naziv.replace(/^Apartment /, '')}</label>
+      ))}
+      <label class="cip cip-sve"><input type="checkbox" data-sve />{T.cijela_kuca}</label>
+    </div>
+    <p class="mala">{T.apartmani_uputa}</p>
+  </fieldset>
+  <div class="gosti cijeli"><OdabirGostiju jezik={jezik} datumi={false} maxOsoba={ukupnoOsoba} prefiks={`u-${apartman || 'x'}`} /></div>
   <label class="kvacica cijeli" data-krevetic hidden><input type="checkbox" name="krevetic" value="1">{T.krevetic}</label>
   <label class="polje cijeli">{T.ime}<input name="ime" autocomplete="name" required maxlength="100"></label>
   <label class="polje">{T.email}<input type="email" name="email" autocomplete="email" required maxlength="160"></label>
@@ -34,5 +39,14 @@ const T = t(jezik);
   .gosti { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .zamka { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .iznos { color: var(--ink-2); }
+  .odabir-ap { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 8px; }
+  .odabir-ap legend { font-size: 13px; font-weight: 600; color: var(--muted); padding: 0; margin-bottom: 6px; }
+  .cipovi { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--field); border-radius: 999px; padding: 7px 12px; font-size: 15px; font-weight: 600; color: var(--navy); background: #FBFAF8; cursor: pointer; min-height: 40px; }
+  .cip input { width: 16px; height: 16px; margin: 0; accent-color: var(--navy); }
+  .cip:has(input:checked) { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .cip:has(input:focus-visible) { outline: 2px solid var(--navy); outline-offset: 2px; }
+  .cip-sve { border-style: dashed; }
+  .odabir-ap[data-greska] .cip { border-color: var(--bad); }
   @media (max-width: 420px) { .obrazac-upita { grid-template-columns: 1fr; padding: 18px; } .gosti { grid-template-columns: 1fr 1fr; } }
 </style>

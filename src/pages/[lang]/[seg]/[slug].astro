@@ -90,6 +90,7 @@ const zaSkriptu = { oznaka: ap.oznaka, naziv: ap.naziv, maxOsoba: ap.maxOsoba, u
         <a class="gumb glavni" href={url.stranica(jezik, 'upit') + `?apartman=${ap.oznaka}`} data-posalji>{T.posalji_za_datume}</a>
         <KontaktGumbi />
         <p class="mala">{T.upit_ne_obvezuje}</p>
+        <p class="mala grupa-pov"><a href={url.naslovnica(jezik) + '#grupe'}>{T.grupa_poveznica}</a></p>
       </aside>
     </div>
   </div>

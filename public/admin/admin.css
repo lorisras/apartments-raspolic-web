@@ -44,12 +44,10 @@ table.dani td.prazan{color:#B7AFA2}
 .kanali{font-size:13px;color:var(--muted)}.kanali b{color:var(--navy)}
 .popis{display:grid;gap:8px;margin:0;padding:0;list-style:none}
 .popis li{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
-.sezona{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 40px;gap:8px;align-items:end}
 .x{border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;height:40px;border-radius:8px}.x:hover{background:#F5E0DD;color:var(--bad)}
 .stanje-ok{color:var(--ok);font-weight:600}.stanje-lose{color:var(--bad);font-weight:600}
 .poruka{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;max-width:calc(100% - 32px);z-index:20}
 .prazno{color:var(--muted);text-align:center;padding:24px}
-@media (max-width:640px){.sezona{grid-template-columns:1fr 1fr}.sezona .x{grid-column:2;justify-self:end}}
 .legenda i.lg-r{background:#F4D9E3}
 .red.sredina{align-items:center}
 .kartice button{white-space:nowrap}
@@ -59,3 +57,15 @@ table.dani td.prazan{color:#B7AFA2}
 .kljuc{font-family:ui-monospace,Consolas,monospace;word-break:break-all;background:var(--sunk);padding:6px 10px;border-radius:8px}
 .kodovi{font-family:ui-monospace,Consolas,monospace;font-size:17px;line-height:1.8;background:var(--sunk);padding:10px 16px;border-radius:10px;columns:2;max-width:360px}
 .upozorenje{background:#F6EBD6;color:#6B4A12;border-radius:10px;padding:12px 14px;font-weight:600}
+table.osn{border-collapse:collapse;font-size:14px;width:100%}
+table.osn th,table.osn td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+table.osn thead th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+table.osn tbody th{white-space:nowrap;font-weight:600;position:sticky;left:0;background:#fff}
+table.osn input.usko{width:90px}
+table.osn select{min-width:120px}
+.dvoje{display:grid;grid-template-columns:90px minmax(120px,1fr);gap:6px}
+.razdoblja{display:grid;gap:8px}
+.razdoblje{display:grid;grid-template-columns:repeat(3,minmax(0,160px)) 40px;gap:8px;align-items:end}
+label.kratko{max-width:260px}
+@media (max-width:640px){.razdoblje{grid-template-columns:1fr 1fr}.razdoblje .x{grid-column:2;justify-self:end}}
+[hidden]{display:none!important}
