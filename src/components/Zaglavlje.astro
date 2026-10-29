@@ -1,24 +1,56 @@
 ---
+// Ljepljivo zaglavlje: logo, izbornik, jezici i gumb za upit. Na mobitelu: logo, Upit i ☰ (izbornik i jezici).
 import { t, url, JEZICI, NAZIV_JEZIKA } from '../i18n/ui.js';
 const { jezik, alternative } = Astro.props;
 const T = t(jezik);
 const naslovnica = url.naslovnica(jezik);
+const stavke = [
+  [`${naslovnica}#apartmani`, T.nav_apartmani],
+  [`${naslovnica}#grupe`, T.nav_grupe],
+  [`${naslovnica}#kuca`, T.nav_kuca],
+  [`${naslovnica}#lokacija`, T.nav_lokacija],
+];
+const jezici = JEZICI.map((j) => ({ j, href: alternative?.[j] ?? url.naslovnica(j) }));
 ---
-<header class="zaglavlje">
+<header class="zaglavlje" id="zaglavlje">
   <div class="omot">
     <a class="znak" href={naslovnica} aria-label="Apartments Rašpolić">
       <span>APARTMENTS</span><span>Rašpolić</span>
     </a>
     <nav class="izbornik" aria-label={T.glavni_izbornik}>
-      <a href={`${naslovnica}#apartmani`}>{T.nav_apartmani}</a>
-      <a href={`${naslovnica}#kuca`}>{T.nav_kuca}</a>
-      <a href={`${naslovnica}#lokacija`}>{T.nav_lokacija}</a>
-      <a href={url.stranica(jezik, 'upit')}>{T.nav_upit}</a>
+      {stavke.map(([href, tekst]) => <a href={href}>{tekst}</a>)}
     </nav>
-    <nav class="jezici" aria-label={T.izbornik_jezika}>
-      {JEZICI.map((j) => (
-        <a href={alternative?.[j] ?? url.naslovnica(j)} hreflang={j} lang={j} aria-current={j === jezik ? 'true' : undefined} title={NAZIV_JEZIKA[j]}>{j.toUpperCase()}</a>
-      ))}
-    </nav>
+    <div class="zaglavlje-desno">
+      <nav class="jezici" aria-label={T.izbornik_jezika}>
+        {jezici.map(({ j, href }) => (
+          <a href={href} hreflang={j} lang={j} aria-current={j === jezik ? 'true' : undefined} title={NAZIV_JEZIKA[j]}>{j.toUpperCase()}</a>
+        ))}
+      </nav>
+      <a class="gumb glavni zaglavlje-upit" href={`${naslovnica}#upit`}>{T.nav_upit}</a>
+      <details class="meni">
+        <summary aria-label={T.glavni_izbornik}><span class="meni-ikona" aria-hidden="true"></span></summary>
+        <div class="meni-ploca">
+          <nav aria-label={T.glavni_izbornik}>
+            {stavke.map(([href, tekst]) => <a href={href}>{tekst}</a>)}
+            <a href={`${naslovnica}#upit`}>{T.nav_upit}</a>
+          </nav>
+          <nav class="meni-jezici" aria-label={T.izbornik_jezika}>
+            {jezici.map(({ j, href }) => (
+              <a href={href} hreflang={j} lang={j} aria-current={j === jezik ? 'true' : undefined}>{NAZIV_JEZIKA[j]}</a>
+            ))}
+          </nav>
+        </div>
+      </details>
+    </div>
   </div>
 </header>
+<script is:inline>
+  (() => {
+    const z = document.getElementById('zaglavlje'), m = z.querySelector('.meni');
+    const sjena = () => z.classList.toggle('skrolano', scrollY > 8);
+    addEventListener('scroll', sjena, { passive: true }); sjena();
+    m.addEventListener('click', (e) => { if (e.target.closest('a')) m.open = false; });
+    document.addEventListener('click', (e) => { if (m.open && !m.contains(e.target)) m.open = false; });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') m.open = false; });
+  })();
+</script>

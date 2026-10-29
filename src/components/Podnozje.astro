@@ -1,19 +1,52 @@
 ---
-import { t, url } from '../i18n/ui.js';
+// Podnožje: o kući i adresa, kontakt, poveznice, pravno i jezici.
+import { t, url, JEZICI, NAZIV_JEZIKA } from '../i18n/ui.js';
 import podaci from '../data/apartmani.json';
-const { jezik } = Astro.props;
+const { jezik, alternative } = Astro.props;
 const T = t(jezik);
+const naslovnica = url.naslovnica(jezik);
+const k = podaci.kuca;
+const wa = (k.whatsapp || '').replace(/\D/g, ''), vb = (k.viber || '').replace(/\D/g, '');
 ---
 <footer class="podnozje">
-  <div class="omot">
-    <div>
-      <p class="ime">Apartments Rašpolić</p>
-      <p>{podaci.kuca.adresa}</p>
+  <div class="omot podnozje-red">
+    <div class="podnozje-o">
+      <a class="znak svijetli" href={naslovnica} aria-label="Apartments Rašpolić"><span>APARTMENTS</span><span>Rašpolić</span></a>
+      <p>{T.podnozje_tekst}</p>
+      <p>{k.adresa}</p>
+      {k.karta && <p><a href={k.karta} target="_blank" rel="noopener">{T.karta} ↗</a></p>}
     </div>
-    <nav aria-label={T.impressum}>
-      <a href={url.stranica(jezik, 'upit')}>{T.nav_upit}</a>
-      <a href={url.stranica(jezik, 'impressum')}>{T.impressum}</a>
-      <a href={url.stranica(jezik, 'privatnost')}>{T.privatnost}</a>
+    <div>
+      <h2>{T.kontakt}</h2>
+      <ul>
+        {k.telefon && <li><a href={`tel:${k.telefon.replace(/\s/g, '')}`}>{k.telefon}</a></li>}
+        {k.email && <li><a href={`mailto:${k.email}`}>{k.email}</a></li>}
+        {wa && <li><a href={`https://wa.me/${wa}`} target="_blank" rel="noopener">WhatsApp</a></li>}
+        {vb && <li><a href={`viber://chat?number=%2B${vb}`}>Viber</a></li>}
+      </ul>
+    </div>
+    <div>
+      <h2>{T.nav_apartmani}</h2>
+      <ul>
+        {podaci.apartmani.map((a) => <li><a href={url.apartman(jezik, a.oznaka)}>{a.naziv}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2>Apartments Rašpolić</h2>
+      <ul>
+        <li><a href={`${naslovnica}#grupe`}>{T.nav_grupe}</a></li>
+        <li><a href={`${naslovnica}#kuca`}>{T.nav_kuca}</a></li>
+        <li><a href={`${naslovnica}#lokacija`}>{T.nav_lokacija}</a></li>
+        <li><a href={`${naslovnica}#upit`}>{T.nav_upit}</a></li>
+        <li><a href={url.stranica(jezik, 'impressum')}>{T.impressum}</a></li>
+        <li><a href={url.stranica(jezik, 'privatnost')}>{T.privatnost}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="omot podnozje-dno">
+    <span>© {new Date().getFullYear()} {T.obitelj}</span>
+    <nav aria-label={T.izbornik_jezika}>
+      {JEZICI.map((j) => <a href={alternative?.[j] ?? url.naslovnica(j)} hreflang={j} lang={j} aria-current={j === jezik ? 'true' : undefined}>{NAZIV_JEZIKA[j]}</a>)}
     </nav>
   </div>
 </footer>

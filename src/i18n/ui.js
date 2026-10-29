@@ -24,6 +24,7 @@ export const alternative = (fn) => Object.fromEntries(JEZICI.map((j) => [j, fn(j
 
 const T = {
   hr: {
+    nav_grupe: 'Grupe', kontakt: 'Kontakt', obitelj: 'Obitelj Rašpolić', podnozje_tekst: 'Sedam apartmana obitelji Rašpolić u Kastvu, iznad Opatije. Domaćini žive odmah do kuće.',
     meta_naslov: 'Apartments Rašpolić – apartmani u Kastvu kraj Opatije',
     meta_opis: 'Sedam apartmana obitelji Rašpolić u mirnoj kući s velikim vrtom, natkrivenim roštiljem i besplatnim parkingom. Kastav, 5 km od Opatije i 3 km od mora.',
     nav_apartmani: 'Apartmani', nav_kuca: 'Kuća i vrt', nav_lokacija: 'Lokacija', nav_upit: 'Upit',
@@ -89,6 +90,7 @@ const T = {
     domacini_tekst: 'Kuću vodi obitelj Rašpolić. Živimo u prvoj kući do apartmana, pa smo tu za ključeve, savjet za izlet ili kad nešto zatreba.',
   },
   en: {
+    nav_grupe: 'Groups', kontakt: 'Contact', obitelj: 'The Rašpolić family', podnozje_tekst: 'Seven apartments run by the Rašpolić family in Kastav, above Opatija. Your hosts live next door.',
     meta_naslov: 'Apartments Rašpolić – apartments in Kastav near Opatija',
     meta_opis: 'Seven apartments run by the Rašpolić family in a quiet house with a large garden, covered barbecue and free parking. Kastav, 5 km from Opatija and 3 km from the sea.',
     nav_apartmani: 'Apartments', nav_kuca: 'House and garden', nav_lokacija: 'Location', nav_upit: 'Inquiry',
@@ -153,6 +155,7 @@ const T = {
     domacini_tekst: 'The house is run by the Rašpolić family. We live in the house next door, so we are here for keys, tips for day trips or whenever you need something.',
   },
   de: {
+    nav_grupe: 'Gruppen', kontakt: 'Kontakt', obitelj: 'Familie Rašpolić', podnozje_tekst: 'Sieben Apartments der Familie Rašpolić in Kastav, oberhalb von Opatija. Die Gastgeber wohnen nebenan.',
     meta_naslov: 'Apartments Rašpolić – Ferienwohnungen in Kastav bei Opatija',
     meta_opis: 'Sieben Ferienwohnungen der Familie Rašpolić in einem ruhigen Haus mit großem Garten, überdachtem Grillplatz und kostenlosem Parkplatz. Kastav, 5 km von Opatija und 3 km vom Meer.',
     nav_apartmani: 'Apartments', nav_kuca: 'Haus und Garten', nav_lokacija: 'Lage', nav_upit: 'Anfrage',
@@ -217,6 +220,7 @@ const T = {
     domacini_tekst: 'Das Haus wird von der Familie Rašpolić geführt. Wir wohnen im Nachbarhaus und sind für Schlüssel, Ausflugstipps oder alles andere jederzeit da.',
   },
   it: {
+    nav_grupe: 'Gruppi', kontakt: 'Contatti', obitelj: 'Famiglia Rašpolić', podnozje_tekst: 'Sette appartamenti della famiglia Rašpolić a Castua, sopra Abbazia. I padroni di casa abitano accanto.',
     meta_naslov: 'Apartments Rašpolić – appartamenti a Castua vicino ad Abbazia',
     meta_opis: 'Sette appartamenti della famiglia Rašpolić in una casa tranquilla con un grande giardino, barbecue coperto e parcheggio gratuito. Castua (Kastav), a 5 km da Abbazia (Opatija) e 3 km dal mare.',
     nav_apartmani: 'Appartamenti', nav_kuca: 'Casa e giardino', nav_lokacija: 'Posizione', nav_upit: 'Richiesta',
