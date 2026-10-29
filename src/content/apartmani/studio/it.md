@@ -1,5 +1,5 @@
 ---
-opis: Studio – 20 m² al piano terra, fino a 2 persone. Castua, a 5 km da Abbazia e 3 km dal mare.
+opis: Studio – 20 m² al piano terra, fino a 2 persone, con ingresso coperto. Una casa di famiglia a Castua, a 3 km dal mare.
 spavanje:
   - prostorija: Monolocale
     opis: Due letti singoli
@@ -10,9 +10,11 @@ oprema:
   - TV con canali satellitari
   - Bagno con doccia
   - Parcheggio gratuito
-  - Terrazza comune con barbecue
+  - Barbecue coperto, sala comune e campo da bocce
   - Lavatrice nella lavanderia comune (piano terra)
 ---
-Piccolo e accogliente monolocale di 20 m² al piano terra della casa. Ha una cucina completamente attrezzata, due letti singoli, TV satellitare, aria condizionata e bagno con doccia.
+Un monolocale piccolo e allegro di 20 m² al piano terra, con pareti gialle e ingresso dal portico coperto. In un unico ambiente ci sono due letti singoli, un tavolo rotondo, una scrivania con TV e una cucina con forno; il bagno ha la doccia.
 
-Ristrutturato nel 2018. La casa si trova in una piccola via tranquilla; davanti ci sono il parcheggio e un ampio prato, e gli ospiti condividono una terrazza con barbecue.
+Per una coppia o due amici, per soggiorni brevi o lunghi. Ristrutturato nel 2018.
+
+Gli ospiti possono usare il barbecue coperto, la sala comune, il ping pong, il campo da bocce e il grande prato davanti alla casa. Noi abitiamo nella casa accanto, quindi siamo sempre a disposizione.

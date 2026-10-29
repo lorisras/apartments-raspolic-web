@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 1 – a bright 33 m² ground-floor apartment for up to 3 guests, with a bathtub, air conditioning and access to the garden. Kastav, 5 km from Opatija.
+opis: Apartment no. 1 – 33 m² on the ground floor, for up to 3 guests, with direct access to the garden. A family house in Kastav, 3 km from the sea.
 spavanje:
   - prostorija: Bedroom
     opis: Double bed 160 × 200
@@ -14,8 +14,10 @@ oprema:
   - Dishwasher
   - Washing machine in the shared laundry room (ground floor)
   - Free parking
-  - Barbecue terrace
+  - Covered barbecue, common room and bocce court
 ---
-A bright ground-floor apartment that opens onto the garden. The living room with kitchen has two wide armchairs, satellite TV and air conditioning. The bedroom has a 160 × 200 double bed, a wardrobe and a desk, and the spacious bathroom has a bathtub.
+A bright ground-floor apartment that opens straight onto the garden. The living room has a kitchen with dining area, TV and a fold-out armchair; the bedroom has a 160 × 200 double bed, wardrobe and desk. The bathroom has a bathtub.
 
-There is parking in front of the house, and guests share a barbecue terrace and a large lawn.
+For a couple or three guests. The covered barbecue and the common room are just a few steps away, also on the ground floor.
+
+Guests can use the covered barbecue, the common room, table tennis, the bocce court and the large lawn in front of the house. We live in the house next door, so we are always close at hand.

@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 4 – 47 m² on the second floor, for up to 4 guests. Kastav, 5 km from Opatija and 3 km from the sea.
+opis: Apartment no. 4 – 47 m² on the second floor, for up to 4 guests, with a balcony and a view. A family house in Kastav, 3 km from the sea.
 spavanje:
   - prostorija: Bedroom
     opis: Two single beds 90 × 200
@@ -14,8 +14,11 @@ oprema:
   - Dishwasher
   - Washing machine in the shared laundry room (ground floor)
   - Free parking
-  - Shared barbecue terrace
+  - Balcony with a view
+  - Covered barbecue, common room and bocce court
 ---
-A 47 m² apartment on the second floor of the house, with a living room and kitchen, a bedroom and a spacious bathroom. The living room has a sofa bed, satellite TV and air conditioning.
+A 47 m² apartment on the second floor, with a balcony looking out over the surrounding rooftops and greenery. The kitchen and dining area is bright and spacious, the living room has a bed and a sofa bed, and the bedroom has two 90 × 200 beds that can be pushed together. The bathroom is spacious.
 
-Renovated in 2019. The house is on a small, quiet street, with parking and a large lawn in front; guests share a barbecue terrace.
+For a family or four friends. Renovated in 2019.
+
+Guests can use the covered barbecue, the common room, table tennis, the bocce court and the large lawn in front of the house. We live in the house next door, so we are always close at hand.

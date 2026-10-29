@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 5 – 55 m² al secondo piano, fino a 5 persone. Castua, a 5 km da Abbazia e 3 km dal mare.
+opis: Apartment no. 5 – 55 m² al secondo piano, due camere, fino a 5 persone, con ampia terrazza. Una casa di famiglia a Castua, a 3 km dal mare.
 spavanje:
   - prostorija: Camera 1
     opis: Due letti singoli
@@ -17,9 +17,11 @@ oprema:
   - Lavatrice nella lavanderia comune (piano terra)
   - Ampia terrazza
   - Parcheggio gratuito
-  - Terrazza comune con barbecue
+  - Barbecue coperto, sala comune e campo da bocce
   - Scrivania
 ---
-Appartamento di 55 m² al secondo piano della casa, con soggiorno e cucina, due camere da letto e un bagno spazioso. Dispone di un’ampia terrazza. Nel soggiorno ci sono un divano letto, TV satellitare e aria condizionata.
+Appartamento di 55 m² al secondo piano, con due camere e un’ampia terrazza con vista. Nella camera più grande ci sono due letti che si possono unire in un matrimoniale, armadio e scrivania, nella più piccola due letti singoli in legno. Il soggiorno con cucina ha divano letto e tavolo da pranzo.
 
-Ristrutturato nel 2019. La casa si trova in una piccola via tranquilla; davanti ci sono il parcheggio e un ampio prato, e gli ospiti condividono una terrazza con barbecue.
+Per una famiglia o un gruppo di amici fino a cinque persone. Ristrutturato nel 2019.
+
+Gli ospiti possono usare il barbecue coperto, la sala comune, il ping pong, il campo da bocce e il grande prato davanti alla casa. Noi abitiamo nella casa accanto, quindi siamo sempre a disposizione.

@@ -1,5 +1,5 @@
 ---
-opis: Studio loft – 20 m² im Dachgeschoss, für bis zu 2 Personen. Kastav, 5 km von Opatija und 3 km vom Meer.
+opis: Studio loft – 20 m² im Dachgeschoss, für bis zu 2 Personen, mit Holzbalken. Ein Familienhaus in Kastav, 3 km vom Meer.
 spavanje:
   - prostorija: Studio
     opis: Zwei Einzelbetten
@@ -11,8 +11,10 @@ oprema:
   - Bad mit Dusche
   - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
   - Kostenloser Parkplatz
-  - Gemeinsame Grillterrasse
+  - Überdachter Grillplatz, Gemeinschaftsraum und Boccia-Bahn
 ---
-Kleines, gemütliches Studio mit 20 m² im Dachgeschoss des Hauses. Es hat eine voll ausgestattete Küche, zwei Einzelbetten, Sat-TV, Klimaanlage und ein Bad mit Dusche.
+Ein 20 m² großes Studio im Dachgeschoss mit sichtbaren Holzbalken. Im Hauptraum befinden sich Küche, Tisch mit roten Stühlen, Sofa und TV, im Schlafbereich zwei Einzelbetten. Das Duschbad liegt unter der Dachschräge.
 
-Renoviert 2019. Das Haus liegt in einer kleinen, ruhigen Straße; davor sind Parkplätze und eine große Rasenfläche, die Gäste teilen sich eine Grillterrasse.
+Für ein Paar oder zwei Freunde, die die Ruhe ganz oben im Haus mögen. Renoviert 2019.
+
+Den Gästen stehen der überdachte Grillplatz, der Gemeinschaftsraum, Tischtennis, die Boccia-Bahn und die große Rasenfläche vor dem Haus zur Verfügung. Wir wohnen im Nachbarhaus und sind jederzeit für Sie da.

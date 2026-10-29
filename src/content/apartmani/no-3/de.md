@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 3 – 55 m² im ersten Stock, für bis zu 5 Personen. Kastav, 5 km von Opatija und 3 km vom Meer.
+opis: Apartment no. 3 – 55 m² im ersten Stock, zwei Schlafzimmer, für bis zu 5 Personen, mit großer Terrasse. Ein Familienhaus in Kastav, 3 km vom Meer.
 spavanje:
   - prostorija: Schlafzimmer 1
     opis: Doppelbett 180 × 200
@@ -17,8 +17,10 @@ oprema:
   - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
   - Große Terrasse
   - Kostenloser Parkplatz
-  - Gemeinsame Grillterrasse
+  - Überdachter Grillplatz, Gemeinschaftsraum und Boccia-Bahn
 ---
-Apartment mit 55 m² im ersten Stock des Hauses, mit Wohnzimmer und Küche, zwei Schlafzimmern und einem geräumigen Bad. Dazu gehört eine große Terrasse. Im Wohnzimmer gibt es ein Schlafsofa, Sat-TV und Klimaanlage.
+Ein 55 m² großes Apartment im ersten Stock mit zwei Schlafzimmern, Parkett und Wohnraum mit Zugang zur großen Terrasse. Das größere Schlafzimmer hat ein Doppelbett 180 × 200, Schrank und Schreibtisch, das kleinere zwei Einzelbetten. Im Wohnraum gibt es Schlafsofa und Esstisch, das Bad hat eine Duschkabine.
 
-Renoviert 2018. Das Haus liegt in einer kleinen, ruhigen Straße; davor sind Parkplätze und eine große Rasenfläche, die Gäste teilen sich eine Grillterrasse.
+Für Familien oder Freunde bis fünf Personen. Renoviert 2018.
+
+Den Gästen stehen der überdachte Grillplatz, der Gemeinschaftsraum, Tischtennis, die Boccia-Bahn und die große Rasenfläche vor dem Haus zur Verfügung. Wir wohnen im Nachbarhaus und sind jederzeit für Sie da.

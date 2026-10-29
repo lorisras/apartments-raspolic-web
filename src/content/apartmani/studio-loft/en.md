@@ -1,5 +1,5 @@
 ---
-opis: Studio loft – 20 m² in the attic, for up to 2 guests. Kastav, 5 km from Opatija and 3 km from the sea.
+opis: Studio loft – 20 m² in the attic, for up to 2 guests, with wooden beams. A family house in Kastav, 3 km from the sea.
 spavanje:
   - prostorija: Studio
     opis: Two single beds
@@ -11,8 +11,10 @@ oprema:
   - Bathroom with shower
   - Washing machine in the shared laundry room (ground floor)
   - Free parking
-  - Shared barbecue terrace
+  - Covered barbecue, common room and bocce court
 ---
-A small, comfortable 20 m² studio in the attic of the house. It has a fully equipped kitchen, two single beds, satellite TV, air conditioning and a bathroom with shower.
+A 20 m² studio in the attic, with exposed wooden beams. The main area has a kitchen, a table with red chairs, a sofa and TV, and the sleeping area two single beds. The shower room sits under the sloping roof.
 
-Renovated in 2019. The house is on a small, quiet street, with parking and a large lawn in front; guests share a barbecue terrace.
+For a couple or two friends who like a quiet spot at the top of the house. Renovated in 2019.
+
+Guests can use the covered barbecue, the common room, table tennis, the bocce court and the large lawn in front of the house. We live in the house next door, so we are always close at hand.

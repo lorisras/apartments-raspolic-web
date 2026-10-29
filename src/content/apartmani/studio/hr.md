@@ -1,5 +1,5 @@
 ---
-opis: Studio – 20 m² u prizemlju, za do 2 osobe. Kastav, 5 km od Opatije i 3 km od mora.
+opis: Studio – 20 m² u prizemlju, za do 2 osobe, s natkrivenim ulazom. Obiteljska kuća u Kastvu, 3 km od mora.
 spavanje:
   - prostorija: Studio
     opis: Dva odvojena kreveta
@@ -10,9 +10,11 @@ oprema:
   - TV, satelitski programi
   - Kupaonica s tušem
   - Besplatan parking
-  - Zajednička terasa s roštiljem
+  - Natkriveni roštilj, zajednička prostorija i boćalište
   - Perilica rublja u zajedničkoj praonici (prizemlje)
 ---
-Mali i udoban studio od 20 m² u prizemlju kuće. Ima potpuno opremljenu kuhinju, dva odvojena kreveta, TV sa satelitskim programima, klima-uređaj i kupaonicu s tušem.
+Mali, vedri studio od 20 m² u prizemlju, sa žutim zidovima i ulazom s natkrivenog trijema. U jednom prostoru su dva odvojena kreveta, okrugli stol, radni stol s TV-om i kuhinja s pećnicom, a kupaonica ima tuš.
 
-Renoviran je 2018. Kuća je u maloj, mirnoj ulici; ispred su parking i velika zelena površina, a gosti dijele terasu s roštiljem.
+Za par ili dvoje prijatelja, na kraći ili dulji boravak. Renoviran 2018.
+
+Gostima su na raspolaganju natkriveni roštilj, zajednička prostorija, stolni tenis, boćalište i velika zelena površina ispred kuće. Mi živimo u prvoj kući do apartmana, pa smo uvijek pri ruci.

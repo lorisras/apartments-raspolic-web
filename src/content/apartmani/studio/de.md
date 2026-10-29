@@ -1,5 +1,5 @@
 ---
-opis: Studio – 20 m² im Erdgeschoss, für bis zu 2 Personen. Kastav, 5 km von Opatija und 3 km vom Meer.
+opis: Studio – 20 m² im Erdgeschoss, für bis zu 2 Personen, mit überdachtem Eingang. Ein Familienhaus in Kastav, 3 km vom Meer.
 spavanje:
   - prostorija: Studio
     opis: Zwei Einzelbetten
@@ -10,9 +10,11 @@ oprema:
   - TV mit Satellitenprogrammen
   - Bad mit Dusche
   - Kostenloser Parkplatz
-  - Gemeinsame Grillterrasse
+  - Überdachter Grillplatz, Gemeinschaftsraum und Boccia-Bahn
   - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
 ---
-Kleines, gemütliches Studio mit 20 m² im Erdgeschoss des Hauses. Es hat eine voll ausgestattete Küche, zwei Einzelbetten, Sat-TV, Klimaanlage und ein Bad mit Dusche.
+Ein kleines, fröhliches Studio mit 20 m² im Erdgeschoss, mit gelben Wänden und Eingang von der überdachten Veranda. In einem Raum befinden sich zwei Einzelbetten, ein runder Tisch, ein Schreibtisch mit TV und eine Küche mit Backofen; das Bad hat eine Dusche.
 
-Renoviert 2018. Das Haus liegt in einer kleinen, ruhigen Straße; davor sind Parkplätze und eine große Rasenfläche, die Gäste teilen sich eine Grillterrasse.
+Für ein Paar oder zwei Freunde, für kurze oder längere Aufenthalte. Renoviert 2018.
+
+Den Gästen stehen der überdachte Grillplatz, der Gemeinschaftsraum, Tischtennis, die Boccia-Bahn und die große Rasenfläche vor dem Haus zur Verfügung. Wir wohnen im Nachbarhaus und sind jederzeit für Sie da.

@@ -1,5 +1,5 @@
 ---
-opis: Studio loft – 20 m² u potkrovlju, za do 2 osobe. Kastav, 5 km od Opatije i 3 km od mora.
+opis: Studio loft – 20 m² u potkrovlju, za do 2 osobe, s drvenim gredama. Obiteljska kuća u Kastvu, 3 km od mora.
 spavanje:
   - prostorija: Studio
     opis: Dva odvojena kreveta
@@ -11,8 +11,10 @@ oprema:
   - Kupaonica s tušem
   - Perilica rublja u zajedničkoj praonici (prizemlje)
   - Besplatan parking
-  - Zajednička terasa s roštiljem
+  - Natkriveni roštilj, zajednička prostorija i boćalište
 ---
-Mali i udoban studio od 20 m² u potkrovlju kuće. Ima potpuno opremljenu kuhinju, dva odvojena kreveta, TV sa satelitskim programima, klima-uređaj i kupaonicu s tušem.
+Studio od 20 m² u potkrovlju, s drvenim gredama na stropu. U glavnom prostoru su kuhinja, stol s crvenim stolicama, kauč i TV, a u spavaćem dijelu dva odvojena kreveta. Kupaonica s tušem je pod kosim krovom.
 
-Renoviran je 2019. Kuća je u maloj, mirnoj ulici; ispred su parking i velika zelena površina, a gosti dijele terasu s roštiljem.
+Za par ili dvoje prijatelja koji vole mir na vrhu kuće. Renoviran 2019.
+
+Gostima su na raspolaganju natkriveni roštilj, zajednička prostorija, stolni tenis, boćalište i velika zelena površina ispred kuće. Mi živimo u prvoj kući do apartmana, pa smo uvijek pri ruci.

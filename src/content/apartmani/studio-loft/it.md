@@ -1,5 +1,5 @@
 ---
-opis: Studio loft – 20 m² in mansarda, fino a 2 persone. Castua, a 5 km da Abbazia e 3 km dal mare.
+opis: Studio loft – 20 m² in mansarda, fino a 2 persone, con travi in legno. Una casa di famiglia a Castua, a 3 km dal mare.
 spavanje:
   - prostorija: Monolocale
     opis: Due letti singoli
@@ -11,8 +11,10 @@ oprema:
   - Bagno con doccia
   - Lavatrice nella lavanderia comune (piano terra)
   - Parcheggio gratuito
-  - Terrazza comune con barbecue
+  - Barbecue coperto, sala comune e campo da bocce
 ---
-Piccolo e accogliente monolocale di 20 m² in mansarda della casa. Ha una cucina completamente attrezzata, due letti singoli, TV satellitare, aria condizionata e bagno con doccia.
+Un monolocale di 20 m² in mansarda, con travi in legno a vista. Nell’ambiente principale ci sono cucina, tavolo con sedie rosse, divano e TV, nella zona notte due letti singoli. Il bagno con doccia è sotto il tetto spiovente.
 
-Ristrutturato nel 2019. La casa si trova in una piccola via tranquilla; davanti ci sono il parcheggio e un ampio prato, e gli ospiti condividono una terrazza con barbecue.
+Per una coppia o due amici che amano la quiete in cima alla casa. Ristrutturato nel 2019.
+
+Gli ospiti possono usare il barbecue coperto, la sala comune, il ping pong, il campo da bocce e il grande prato davanti alla casa. Noi abitiamo nella casa accanto, quindi siamo sempre a disposizione.

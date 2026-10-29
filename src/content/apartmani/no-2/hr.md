@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 2 – 47 m² na prvom katu, za do 4 osobe. Kastav, 5 km od Opatije i 3 km od mora.
+opis: Apartment no. 2 – 47 m² na prvom katu, za do 4 osobe, s velikom terasom. Četiri zvjezdice. Obiteljska kuća u Kastvu, 3 km od mora.
 spavanje:
   - prostorija: Spavaća soba
     opis: Bračni krevet 180 × 200
@@ -15,8 +15,10 @@ oprema:
   - Perilica rublja u zajedničkoj praonici (prizemlje)
   - Velika terasa uz apartman
   - Besplatan parking
-  - Zajednička terasa s roštiljem
+  - Natkriveni roštilj, zajednička prostorija i boćalište
 ---
-Apartman od 47 m² na prvom katu kuće, s dnevnim boravkom i kuhinjom, spavaćom sobom i prostranom kupaonicom. Uz apartman je velika terasa. Dnevni boravak ima kauč na razvlačenje, TV sa satelitskim programima i klima-uređaj.
+Apartman od 47 m² na prvom katu, s parketom i velikom terasom sa suncobranom i pogledom na vrt. Dnevni boravak s kuhinjom ima dvoja balkonska vrata, kauč i blagovaonicu, a spavaća soba bračni krevet 180 × 200, ormar, radni stol i izlaz na terasu. Kupaonica ima tuš-kabinu.
 
-Renoviran je 2018. Kuća je u maloj, mirnoj ulici; ispred su parking i velika zelena površina, a gosti dijele terasu s roštiljem.
+Jedini apartman u kući s četiri zvjezdice. Renoviran 2018.
+
+Gostima su na raspolaganju natkriveni roštilj, zajednička prostorija, stolni tenis, boćalište i velika zelena površina ispred kuće. Mi živimo u prvoj kući do apartmana, pa smo uvijek pri ruci.

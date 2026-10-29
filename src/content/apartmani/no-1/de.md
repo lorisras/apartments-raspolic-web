@@ -1,5 +1,5 @@
 ---
-opis: Apartment no. 1 – helles Apartment mit 33 m² im Erdgeschoss für bis zu 3 Personen, mit Badewanne, Klimaanlage und Zugang zum Garten. Kastav, 5 km von Opatija.
+opis: Apartment no. 1 – 33 m² im Erdgeschoss, für bis zu 3 Personen, mit direktem Zugang zum Garten. Ein Familienhaus in Kastav, 3 km vom Meer.
 spavanje:
   - prostorija: Schlafzimmer
     opis: Doppelbett 160 × 200
@@ -14,8 +14,10 @@ oprema:
   - Geschirrspüler
   - Waschmaschine im gemeinsamen Waschraum (Erdgeschoss)
   - Kostenloser Parkplatz
-  - Grillterrasse
+  - Überdachter Grillplatz, Gemeinschaftsraum und Boccia-Bahn
 ---
-Helles Apartment im Erdgeschoss mit Zugang zum Garten. Das Wohnzimmer mit Küche hat zwei breite Sessel, Sat-TV und Klimaanlage. Im Schlafzimmer stehen ein Doppelbett 160 × 200, ein Kleiderschrank und ein Schreibtisch, das geräumige Bad hat eine Badewanne.
+Ein helles Apartment im Erdgeschoss mit direktem Ausgang in den Garten. Im Wohnraum befinden sich Küche mit Essplatz, TV und ein ausklappbarer Sessel; im Schlafzimmer ein Doppelbett 160 × 200, Schrank und Schreibtisch. Das Bad hat eine Badewanne.
 
-Vor dem Haus gibt es Parkplätze, die Gäste teilen sich eine Grillterrasse und eine große Rasenfläche.
+Für ein Paar oder drei Personen. Grillplatz und Gemeinschaftsraum sind nur wenige Schritte entfernt, ebenfalls im Erdgeschoss.
+
+Den Gästen stehen der überdachte Grillplatz, der Gemeinschaftsraum, Tischtennis, die Boccia-Bahn und die große Rasenfläche vor dem Haus zur Verfügung. Wir wohnen im Nachbarhaus und sind jederzeit für Sie da.
