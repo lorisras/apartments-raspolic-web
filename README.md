@@ -78,8 +78,8 @@ Izgubljen mobitel i rezervni kodovi: cPanel → File Manager → `web-podaci` �
 ## Prije objave
 
 - [ ] Fotografije u originalu u `src/assets/`
-- [ ] Opisi apartmana no. 2 – Studio loft na 4 jezika (`src/content/apartmani/`)
-- [ ] m², kat i broj spavaćih soba za no. 2 – Studio loft (`src/data/apartmani.json`)
+- [x] Opisi apartmana na 4 jezika – iz Airbnb oglasa, provjeriti (`src/content/apartmani/`)
+- [x] m², kat, spavaće sobe i Airbnb ocjene (`src/data/apartmani.json`)
 - [ ] Broj za WhatsApp i Viber, telefon i e-mail (`src/data/apartmani.json` → `kuca`)
 - [ ] Koordinate kuće za kartu (`kuca.geo`)
 - [ ] Impressum (OIB i ostalo) i puni tekst politike privatnosti

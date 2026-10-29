@@ -3,7 +3,10 @@
   "kuca": {
     "naziv": "Apartments Rašpolić",
     "adresa": "Trinajstići 31B, 51215 Kastav, Hrvatska",
-    "geo": { "lat": null, "lng": null },
+    "geo": {
+      "lat": null,
+      "lng": null
+    },
     "telefon": "",
     "whatsapp": "",
     "viber": "",
@@ -15,84 +18,147 @@
       "naziv": "Apartment no. 1",
       "vlasnik": "Loris Rašpolić",
       "m2": 33,
-      "kat": { "hr": "prizemlje", "en": "ground floor", "de": "Erdgeschoss", "it": "piano terra" },
+      "kat": {
+        "hr": "prizemlje",
+        "en": "ground floor",
+        "de": "Erdgeschoss",
+        "it": "piano terra"
+      },
       "spavaceSobe": 1,
       "maxOsoba": 3,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": { "ocjena": 4.74, "recenzija": 23, "url": "https://www.airbnb.com/rooms/24991188" }
+      "airbnb": {
+        "ocjena": 4.74,
+        "recenzija": 23,
+        "url": "https://www.airbnb.com/rooms/24991188"
+      }
     },
     {
       "oznaka": "no-2",
       "naziv": "Apartment no. 2",
       "vlasnik": "Loris Rašpolić",
-      "m2": null,
-      "kat": null,
-      "spavaceSobe": null,
+      "m2": 47,
+      "kat": {
+        "hr": "1. kat",
+        "en": "first floor",
+        "de": "1. Stock",
+        "it": "primo piano"
+      },
+      "spavaceSobe": 1,
       "maxOsoba": 4,
       "zvjezdice": 4,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.92,
+        "recenzija": 26,
+        "url": "https://www.airbnb.com/rooms/25106524"
+      }
     },
     {
       "oznaka": "no-3",
       "naziv": "Apartment no. 3",
       "vlasnik": "Loris Rašpolić",
-      "m2": null,
-      "kat": null,
-      "spavaceSobe": null,
+      "m2": 55,
+      "kat": {
+        "hr": "1. kat",
+        "en": "first floor",
+        "de": "1. Stock",
+        "it": "primo piano"
+      },
+      "spavaceSobe": 2,
       "maxOsoba": 5,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.89,
+        "recenzija": 18,
+        "url": "https://www.airbnb.com/rooms/25107572"
+      }
     },
     {
       "oznaka": "no-4",
       "naziv": "Apartment no. 4",
       "vlasnik": "Alen Rašpolić",
-      "m2": null,
-      "kat": null,
-      "spavaceSobe": null,
+      "m2": 47,
+      "kat": {
+        "hr": "2. kat",
+        "en": "second floor",
+        "de": "2. Stock",
+        "it": "secondo piano"
+      },
+      "spavaceSobe": 1,
       "maxOsoba": 4,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.83,
+        "recenzija": 18,
+        "url": "https://www.airbnb.com/rooms/35302089"
+      }
     },
     {
       "oznaka": "no-5",
       "naziv": "Apartment no. 5",
       "vlasnik": "Alen Rašpolić",
-      "m2": null,
-      "kat": null,
-      "spavaceSobe": null,
+      "m2": 55,
+      "kat": {
+        "hr": "2. kat",
+        "en": "second floor",
+        "de": "2. Stock",
+        "it": "secondo piano"
+      },
+      "spavaceSobe": 2,
       "maxOsoba": 5,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.84,
+        "recenzija": 19,
+        "url": "https://www.airbnb.com/rooms/35302971"
+      }
     },
     {
       "oznaka": "studio",
       "naziv": "Studio",
       "vlasnik": "Loris Rašpolić",
-      "m2": null,
-      "kat": null,
+      "m2": 20,
+      "kat": {
+        "hr": "prizemlje",
+        "en": "ground floor",
+        "de": "Erdgeschoss",
+        "it": "piano terra"
+      },
       "spavaceSobe": 0,
       "maxOsoba": 2,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.87,
+        "recenzija": 31,
+        "url": "https://www.airbnb.com/rooms/24534977"
+      }
     },
     {
       "oznaka": "studio-loft",
       "naziv": "Studio loft",
       "vlasnik": "Alen Rašpolić",
-      "m2": null,
-      "kat": null,
+      "m2": 20,
+      "kat": {
+        "hr": "potkrovlje",
+        "en": "attic",
+        "de": "Dachgeschoss",
+        "it": "mansarda"
+      },
       "spavaceSobe": 0,
       "maxOsoba": 2,
       "zvjezdice": 3,
       "registracijskiBroj": "",
-      "airbnb": null
+      "airbnb": {
+        "ocjena": 4.8,
+        "recenzija": 30,
+        "url": "https://www.airbnb.com/rooms/35303637"
+      }
     }
   ]
 }
