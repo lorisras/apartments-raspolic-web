@@ -24,7 +24,7 @@ const jsonLd = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: 'Apartments Rašpolić',
   address: { '@type': 'PostalAddress', streetAddress: 'Trinajstići 31B', postalCode: '51215', addressLocality: 'Kastav', addressCountry: 'HR' },
   url: new URL(url.naslovnica(jezik), Astro.site).href, numberOfRooms: aps.length,
-  amenityFeature: ['Free parking', 'Wi-Fi', 'Air conditioning', 'Garden', 'Barbecue'].map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
+  amenityFeature: ['Free parking', 'Wi-Fi', 'Air conditioning', 'Garden', 'Barbecue', 'Electric vehicle charging station'].map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
 };
 ---
 <Osnovni jezik={jezik} naslov={T.meta_naslov} alternative={alternative(url.naslovnica)} jsonLd={jsonLd} slika={kuca[0]?.src}>
