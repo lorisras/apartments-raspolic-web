@@ -24,6 +24,7 @@ const jsonLd = {
   '@context': 'https://schema.org', '@type': 'LodgingBusiness', name: 'Apartments Rašpolić',
   address: { '@type': 'PostalAddress', streetAddress: 'Trinajstići 31B', postalCode: '51215', addressLocality: 'Kastav', addressCountry: 'HR' },
   url: new URL(url.naslovnica(jezik), Astro.site).href, numberOfRooms: aps.length,
+  ...(podaci.kuca.geo?.lat && { geo: { '@type': 'GeoCoordinates', latitude: podaci.kuca.geo.lat, longitude: podaci.kuca.geo.lng }, hasMap: podaci.kuca.karta }),
   amenityFeature: ['Free parking', 'Wi-Fi', 'Air conditioning', 'Garden', 'Barbecue', 'Electric vehicle charging station'].map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
 };
 ---
@@ -129,7 +130,7 @@ const jsonLd = {
           {T.udaljenosti.map(([m, d]) => <div><dt>{m}</dt><dd>{d}</dd></div>)}
         </dl>
       </div>
-      <a class="karta" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(podaci.kuca.geo?.lat ? `${podaci.kuca.geo.lat},${podaci.kuca.geo.lng}` : podaci.kuca.adresa)}`} target="_blank" rel="noopener">
+      <a class="karta" href={podaci.kuca.karta || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(podaci.kuca.adresa)}`} target="_blank" rel="noopener">
         <span>{podaci.kuca.adresa}</span>
         <span class="gumb">{T.karta} ↗</span>
       </a>

@@ -4,13 +4,14 @@
     "naziv": "Apartments Rašpolić",
     "adresa": "Trinajstići 31B, 51215 Kastav, Hrvatska",
     "geo": {
-      "lat": null,
-      "lng": null
+      "lat": 45.3696927,
+      "lng": 14.3283776
     },
     "telefon": "",
     "whatsapp": "",
     "viber": "",
-    "email": ""
+    "email": "",
+    "karta": "https://www.google.com/maps/place/Apartments+Raspolic/@45.3696927,14.3283776,17z/data=!4m6!3m5!1s0x4764a9c27f7a4b09:0x2c21ed6b8c734371!8m2!3d45.3696927!4d14.3283776"
   },
   "apartmani": [
     {
