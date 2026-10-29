@@ -4,7 +4,7 @@ spavanje:
   - prostorija: Bedroom 1
     opis: Double bed 180 × 200
   - prostorija: Bedroom 2
-    opis: Two single beds
+    opis: One single bed
   - prostorija: Living room
     opis: Sofa bed
 oprema:
