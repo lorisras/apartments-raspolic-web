@@ -129,7 +129,7 @@ const jsonLd = {
           {T.udaljenosti.map(([m, d]) => <div><dt>{m}</dt><dd>{d}</dd></div>)}
         </dl>
       </div>
-      <a class="karta" href={podaci.kuca.geo.lat ? `https://www.openstreetmap.org/?mlat=${podaci.kuca.geo.lat}&mlon=${podaci.kuca.geo.lng}#map=16/${podaci.kuca.geo.lat}/${podaci.kuca.geo.lng}` : `https://www.openstreetmap.org/search?query=${encodeURIComponent(podaci.kuca.adresa)}`} target="_blank" rel="noopener">
+      <a class="karta" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(podaci.kuca.geo?.lat ? `${podaci.kuca.geo.lat},${podaci.kuca.geo.lng}` : podaci.kuca.adresa)}`} target="_blank" rel="noopener">
         <span>{podaci.kuca.adresa}</span>
         <span class="gumb">{T.karta} ↗</span>
       </a>
