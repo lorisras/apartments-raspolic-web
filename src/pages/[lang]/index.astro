@@ -115,7 +115,10 @@ const jsonLd = {
         <p class="nadnaslov">{T.kuca_i_vrt}</p>
         <h2>{T.kuca_naslov}</h2>
         <p class="tekst-2">{T.kuca_tekst}</p>
-        <ul class="tockice">{T.kuca_popis.map((x) => <li>{x}</li>)}</ul>
+        <div class="pogodnosti">
+          <div><h3>{T.kuca_druzenje_naslov}</h3><ul class="tockice jedan">{T.kuca_druzenje.map((x) => <li>{x}</li>)}</ul></div>
+          <div><h3>{T.kuca_prakticno_naslov}</h3><ul class="tockice jedan">{T.kuca_prakticno.map((x) => <li>{x}</li>)}</ul></div>
+        </div>
       </div>
     </div>
   </section>
@@ -144,6 +147,7 @@ const jsonLd = {
         <h2>{T.upit_naslov}</h2>
         <p class="tekst-2">{T.upit_tekst}</p>
         <KontaktGumbi />
+        <div class="domacini"><h3>{T.domacini_naslov}</h3><p class="tekst-2">{T.domacini_tekst}</p></div>
         {(podaci.kuca.telefon || podaci.kuca.email) && <p class="mala">{[podaci.kuca.telefon, podaci.kuca.email].filter(Boolean).join(' · ')}</p>}
       </div>
       <ObrazacUpita jezik={jezik} />
@@ -193,6 +197,12 @@ const jsonLd = {
   .udaljenosti dd { margin: 0; font-family: var(--f-naslov); font-size: 26px; }
   .karta { aspect-ratio: 4 / 3; background: var(--navy-2); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: #D5DDEA; text-decoration: none; text-align: center; padding: 24px; }
   .karta:hover { color: #fff; }
+  .pogodnosti { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px 32px; }
+  .pogodnosti h3 { font-size: 15px; text-transform: uppercase; letter-spacing: .08em; color: var(--pink); margin: 0 0 10px; font-family: var(--f-tekst); }
+  .tockice.jedan { grid-template-columns: 1fr; }
+  .domacini { border-left: 3px solid var(--pink); padding: 4px 0 4px 16px; margin-top: 8px; }
+  .domacini h3 { margin: 0 0 4px; font-size: 18px; }
+  .domacini p { margin: 0; }
   .grupa { padding: 20px; margin-bottom: 24px; border-color: var(--slate); display: grid; gap: 12px; }
   .grupa :global(h3) { margin: 0; }
   .grupa :global(.komb) { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding: 12px 0; border-top: 1px solid var(--line); }
