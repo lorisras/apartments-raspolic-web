@@ -11,6 +11,10 @@ return [
     'email_upiti' => 'info@apartments-raspolic.com',
     'email_od' => 'web@apartments-raspolic.com',
 
+    // Slanje preko SMTP-a s adrese na domeni (preporučeno; bez ovoga web koristi PHP mail()).
+    // Lozinka je lozinka e-mail računa web@… iz cPanel → Email Accounts.
+    // 'smtp' => ['host' => 'mail.apartments-raspolic.com', 'port' => 465, 'korisnik' => 'web@apartments-raspolic.com', 'lozinka' => 'LOZINKA'],
+
     // Kamo stiže upozorenje ako se neki kalendar ne može dohvatiti dulje od 24 h ('' = ne šalji).
     'email_upozorenja' => 'info@apartments-raspolic.com',
 

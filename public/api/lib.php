@@ -272,5 +272,60 @@ function posalji_mail(string $prima, string $naslov, string $tekst, ?string $odg
         file_put_contents($c['mail_testni_izlaz'], "To: $prima\nSubject: $naslov\n" . print_r($zaglavlja, true) . "\n$tekst\n-----\n", FILE_APPEND);
         return true;
     }
-    return mail($prima, mb_encode_mimeheader($naslov, 'UTF-8', 'Q'), $tekst, $zaglavlja, '-f' . $od);
+    $nasl = mb_encode_mimeheader($naslov, 'UTF-8', 'Q');
+    // 1) SMTP s adrese na domeni (ako je u config.php upisan 'smtp') – najpouzdanije
+    if (!empty($c['smtp']['host'])) {
+        try { smtp_posalji($c['smtp'], $od, $prima, $nasl, $tekst, $zaglavlja); return true; }
+        catch (Throwable $e) { mail_zapisi("SMTP: " . $e->getMessage()); }
+    }
+    // 2) PHP mail() s povratnom adresom, 3) bez nje (neki hostinzi ne dopuštaju -f)
+    if (@mail($prima, $nasl, $tekst, $zaglavlja, '-f' . $od)) return true;
+    $g1 = error_get_last()['message'] ?? '?';
+    if (@mail($prima, $nasl, $tekst, $zaglavlja)) return true;
+    mail_zapisi("mail() nije uspio (s -f: $g1; bez -f: " . (error_get_last()['message'] ?? '?') . ")");
+    return false;
+}
+
+/** Zapis greške slanja u web-podaci/mail-greske.log (bez sadržaja poruka). */
+function mail_zapisi(string $poruka): void {
+    @file_put_contents(put('mail-greske.log'), date('c') . " $poruka\n", FILE_APPEND);
+}
+
+/** Minimalni SMTP klijent (SSL 465 ili STARTTLS 587, AUTH LOGIN). */
+function smtp_posalji(array $s, string $od, string $prima, string $naslov, string $tekst, array $zaglavlja): void {
+    $port = (int)($s['port'] ?? 465);
+    $host = $s['host'];
+    $ctx = stream_context_create(['ssl' => ['peer_name' => $host]]);
+    $f = @stream_socket_client(($port === 465 ? 'ssl://' : 'tcp://') . "$host:$port", $en, $es, 15, STREAM_CLIENT_CONNECT, $ctx);
+    if (!$f) throw new RuntimeException("spajanje: $es");
+    stream_set_timeout($f, 15);
+    $cita = function (int $ocekuje) use ($f): string {
+        $sve = '';
+        while (($red = fgets($f, 1024)) !== false) { $sve .= $red; if (strlen($red) < 4 || $red[3] === ' ') break; }
+        if ((int)substr($sve, 0, 3) !== $ocekuje) throw new RuntimeException(trim($sve) ?: 'nema odgovora');
+        return $sve;
+    };
+    $salji = function (string $cmd, int $ocekuje) use ($f, $cita) { fwrite($f, "$cmd\r\n"); return $cita($ocekuje); };
+    $cita(220);
+    $ime = gethostname() ?: 'localhost';
+    $salji("EHLO $ime", 250);
+    if ($port !== 465) {
+        $salji('STARTTLS', 220);
+        if (!stream_socket_enable_crypto($f, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) throw new RuntimeException('STARTTLS');
+        $salji("EHLO $ime", 250);
+    }
+    $salji('AUTH LOGIN', 334);
+    $salji(base64_encode($s['korisnik'] ?? $od), 334);
+    $salji(base64_encode($s['lozinka'] ?? ''), 235);
+    $salji("MAIL FROM:<$od>", 250);
+    $salji("RCPT TO:<$prima>", 250);
+    $salji('DATA', 354);
+    $z = ['Date' => date('r'), 'To' => "<$prima>", 'Subject' => $naslov, 'Message-ID' => '<' . bin2hex(random_bytes(12)) . '@' . substr(strrchr($od, '@'), 1) . '>'] + $zaglavlja;
+    $poruka = '';
+    foreach ($z as $k => $v) $poruka .= "$k: $v\r\n";
+    $poruka .= "\r\n" . preg_replace('/^\./m', '..', str_replace(["\r\n", "\n"], ["\n", "\r\n"], $tekst));
+    fwrite($f, $poruka . "\r\n.\r\n");
+    $cita(250);
+    fwrite($f, "QUIT\r\n");
+    fclose($f);
 }
