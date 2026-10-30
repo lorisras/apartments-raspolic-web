@@ -6,6 +6,7 @@ export function GET({ site }) {
     (j) => url.naslovnica(j),
     ...podaci.apartmani.map((a) => (j) => url.apartman(j, a.oznaka)),
     (j) => url.stranica(j, 'upit'),
+    (j) => url.stranica(j, 'pravila'),
   ];
   const abs = (p) => new URL(p, site).href;
   const stavke = grupe.flatMap((fn) => JEZICI.map((j) => `  <url><loc>${abs(fn(j))}</loc>${JEZICI.map((k) => `<xhtml:link rel="alternate" hreflang="${k}" href="${abs(fn(k))}"/>`).join('')}</url>`));

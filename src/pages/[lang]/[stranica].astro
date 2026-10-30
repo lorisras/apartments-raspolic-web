@@ -6,13 +6,16 @@ import podaci from '../../data/apartmani.json';
 import { JEZICI, PUT, t, url, alternative } from '../../i18n/ui.js';
 
 export function getStaticPaths() {
-  return JEZICI.flatMap((lang) => ['upit', 'impressum', 'privatnost'].map((vrsta) => ({ params: { lang, stranica: PUT[vrsta][lang] }, props: { vrsta } })));
+  return JEZICI.flatMap((lang) => ['upit', 'impressum', 'privatnost', 'pravila'].map((vrsta) => ({ params: { lang, stranica: PUT[vrsta][lang] }, props: { vrsta } })));
 }
 const { vrsta } = Astro.props;
 const jezik = Astro.params.lang;
 const T = t(jezik);
-const naslov = { upit: T.upit_naslov, impressum: T.impressum, privatnost: T.privatnost }[vrsta];
-const vlasnici = [...new Set(podaci.apartmani.map((a) => a.vlasnik))];
+const naslov = { upit: T.upit_naslov, impressum: T.impressum, privatnost: T.privatnost, pravila: T.pravila }[vrsta];
+const k = podaci.kuca;
+const vlasnici = k.vlasnici || [];
+const veznik = { hr: ' i ', en: ' and ', de: ' und ', it: ' e ' }[jezik];
+const zamijeni = (txt) => txt.replace('%a', k.adresa).replace('%e', k.email).replace('%v', vlasnici.map((v) => `${v.ime} (${T.oib} ${v.oib})`).join(veznik));
 ---
 <Osnovni jezik={jezik} naslov={`${naslov} – Apartments Rašpolić`} alternative={alternative((j) => url.stranica(j, vrsta))}>
   <div class="omot stranica">
@@ -31,19 +34,27 @@ const vlasnici = [...new Set(podaci.apartmani.map((a) => a.vlasnik))];
     {vrsta === 'impressum' && (
       <div class="stog uski">
         <h1>{T.impressum}</h1>
-        <p><b>Apartments Rašpolić</b><br>{podaci.kuca.adresa}</p>
-        <p>{T.vlasnici}: {vlasnici.join(', ')}</p>
-        <p class="mala">[OIB, kontakt i ostali podaci za impressum – upisati]</p>
+        <p><b>Apartments Rašpolić</b><br>{k.adresa}<br>{[k.telefon, k.email].filter(Boolean).join(' · ')}</p>
+        <h2>{T.iznajmljivaci}</h2>
+        {vlasnici.map((v) => <p>{v.ime}<br>{v.adresa}<br>{T.oib}: {v.oib}</p>)}
         <ul class="popis-ap">
           {podaci.apartmani.map((a) => <li><b>{a.naziv}</b> · {T.iznajmljivac}: {a.vlasnik} · {T.kategorizacija}: {T.zvjezdice(a.zvjezdice)}{a.registracijskiBroj && <> · {T.reg_broj}: {a.registracijskiBroj}</>}</li>)}
         </ul>
+        <h2>{T.prigovor_naslov}</h2>
+        <p class="tekst-2">{zamijeni(T.prigovor_tekst)}</p>
       </div>
     )}
     {vrsta === 'privatnost' && (
       <div class="stog uski">
         <h1>{T.privatnost}</h1>
-        <p class="tekst-2">{T.privatnost_tekst}</p>
-        <p class="mala">[Puni tekst politike privatnosti (GDPR) – upisati prije objave.]</p>
+        {T.privatnost_odsjeci.map(([n, txt]) => <section><h2>{n}</h2><p class="tekst-2">{zamijeni(txt)}</p></section>)}
+      </div>
+    )}
+    {vrsta === 'pravila' && (
+      <div class="stog uski">
+        <h1>{T.pravila}</h1>
+        <p class="tekst-2 veliki">{T.pravila_uvod}</p>
+        {T.pravila_odsjeci.map(([n, stavke]) => <section><h2>{n}</h2><ul class="tockice jedan">{stavke.map((x) => <li>{x}</li>)}</ul></section>)}
       </div>
     )}
   </div>
@@ -55,4 +66,8 @@ const vlasnici = [...new Set(podaci.apartmani.map((a) => a.vlasnik))];
   .stog { display: flex; flex-direction: column; gap: 16px; }
   .uski { max-width: 720px; }
   .popis-ap { padding-left: 20px; display: grid; gap: 6px; }
+  .uski h2 { font-size: 24px; margin-top: 12px; }
+  .uski section { display: grid; gap: 10px; }
+  .tockice.jedan { grid-template-columns: 1fr; }
+  .veliki { font-size: 19px; }
 </style>

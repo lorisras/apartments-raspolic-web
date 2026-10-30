@@ -11,7 +11,22 @@
     "whatsapp": "385915899849",
     "viber": "385915899849",
     "email": "lraspolic@gmail.com",
-    "karta": "https://maps.google.com/?cid=3180083858073928561"
+    "karta": "https://maps.google.com/?cid=3180083858073928561",
+    "vlasnici": [
+      {
+        "ime": "Loris Rašpolić",
+        "oib": "45778656532",
+        "adresa": "Trinajstići 31B, 51215 Kastav, Hrvatska"
+      },
+      {
+        "ime": "Alen Rašpolić",
+        "oib": "49070400089",
+        "adresa": "Trinajstići 31B, 51215 Kastav, Hrvatska"
+      }
+    ],
+    "prijava": "15:00",
+    "odjava": "10:00",
+    "mir": "22:00"
   },
   "apartmani": [
     {

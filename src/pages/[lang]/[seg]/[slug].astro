@@ -69,6 +69,17 @@ const zaSkriptu = { oznaka: ap.oznaka, naziv: ap.naziv, maxOsoba: ap.maxOsoba, u
             <ul class="tockice">{unos.data.oprema.map((o) => <li>{o}</li>)}</ul>
           </section>
         )}
+        <section class="stog znati">
+          <h2>{T.dobro_znati}</h2>
+          <ul class="znati-popis">
+            <li>{T.prijava_od.replace('%s', podaci.kuca.prijava)}</li>
+            <li>{T.odjava_do.replace('%s', podaci.kuca.odjava)}</li>
+            <li>{T.nepusenje}</li>
+            <li>{T.bez_ljubimaca}</li>
+            <li>{T.mir_od.replace('%s', podaci.kuca.mir)}</li>
+          </ul>
+          <a href={url.stranica(jezik, 'pravila')}>{T.svi_pravila}</a>
+        </section>
         <section class="stog">
           <h2>{T.cijene}</h2>
           <div id="cjenik" data-naslovi={JSON.stringify({ razdoblje: T.razdoblje, cijena: T.cijena_noc, min: T.min_noci, cijelaGodina: T.cijela_godina, ostalo: T.ostatak_godine })} data-dodatak={T.dodatak_osoba('%o', '%d')}></div>
@@ -124,6 +135,9 @@ const zaSkriptu = { oznaka: ap.oznaka, naziv: ap.naziv, maxOsoba: ap.maxOsoba, u
   .spavanje .kartica { padding: 16px 18px; }
   .prostorija { font-weight: 600; color: var(--navy); }
   .pravno { padding-top: 16px; border-top: 1px solid var(--line); }
+  .znati { gap: 12px; }
+  .znati-popis { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .znati-popis li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 15px; }
   .bocno { flex: 1 1 340px; min-width: 0; padding: 22px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 92px; }
   @media (max-width: 960px) { .bocno { position: static; } }
   .od-cijena { font-size: 15px; color: var(--ink-2); }
